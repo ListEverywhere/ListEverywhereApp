@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/reusable_button.dart';
 
 void main() {
   runApp(const MyApp());
@@ -58,15 +59,21 @@ class _MyHomePageState extends State<MyHomePage> {
                   )),
             ),
             Expanded(
-                child: Container(
-                    color: Colors.amber[100],
-                    margin: const EdgeInsets.all(15.0),
-                    child: const Center(child: Text("Sign in")))),
+              child: ReusableButton(
+                color: Colors.amber[200],
+                text: "Sign in",
+                onTap: () {},
+                padding: const EdgeInsets.all(15.0),
+              ),
+            ),
             Expanded(
-                child: Container(
-                    color: Colors.amber[100],
-                    margin: const EdgeInsets.all(15.0),
-                    child: const Center(child: Text("Sign up"))))
+              child: ReusableButton(
+                color: Colors.amber[300],
+                text: "Sign up for a new account",
+                onTap: () {},
+                padding: const EdgeInsets.all(15.0),
+              ),
+            ),
           ],
         ),
       ),

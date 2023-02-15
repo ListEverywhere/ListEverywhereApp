@@ -35,4 +35,9 @@ class UserModel {
       'password': password
     };
   }
+
+  @override
+  String toString() {
+    return "UserModel object: $firstName | $lastName | $email | $dateOfBirth | $username | $password";
+  }
 }

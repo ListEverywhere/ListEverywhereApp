@@ -6,15 +6,17 @@ import 'package:http/http.dart' as http;
 class UserService {
   final String _url = 'http://localhost:8080/users/';
 
-  Future registerUser(UserModel user) async {
+  Future sendRegisterData(UserModel user) async {
     var userJson = jsonEncode(user.toJson());
     print(userJson);
 
-    var response = await http.post(
-      Uri.parse(_url),
-      headers: {'Content-Type': 'application/json'},
-      body: userJson,
-    );
+    var response = await http
+        .post(
+          Uri.parse(_url),
+          headers: {'Content-Type': 'application/json'},
+          body: userJson,
+        )
+        .timeout(const Duration(seconds: 2));
 
     print(response);
 

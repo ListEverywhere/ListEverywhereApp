@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => HomeView(),
-          '/register': (context) => const RegisterView()
+          '/register': (context) => RegisterView()
         });
   }
 }

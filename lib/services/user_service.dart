@@ -12,7 +12,7 @@ class UserService {
 
     var response = await http
         .post(
-          Uri.parse('_url/'),
+          Uri.parse('$_url/'),
           headers: {'Content-Type': 'application/json'},
           body: userJson,
         )

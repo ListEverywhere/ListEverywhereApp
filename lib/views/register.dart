@@ -28,64 +28,85 @@ class RegisterViewState extends State<RegisterView> {
 
     return Scaffold(
       body: SafeArea(
-        child: Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(36.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ReusableFormField(controller: firstName, hint: "First Name"),
-                  ReusableFormField(controller: lastName, hint: "Last Name"),
-                  ReusableFormField(controller: email, hint: "Email Address"),
-                  ReusableFormDateField(
-                      controller: dateOfBirth, hint: "Date of birth"),
-                  ReusableFormField(controller: username, hint: "Username"),
-                  ReusableFormField(
-                    controller: password,
-                    hint: "Password",
-                    isPassword: true,
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState?.save();
-                        UserModel user = UserModel(
-                            firstName: firstName.text,
-                            lastName: lastName.text,
-                            email: email.text,
-                            dateOfBirth: DateTime.parse(dateOfBirth.text),
-                            username: username.text,
-                            password: password.text);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing...')),
-                        );
-                        try {
-                          var response =
-                              await widget.userService.sendRegisterData(user);
-                          print("success");
-                          showDialog(
-                              context: context,
-                              builder: (ctxt) => AlertDialog(
-                                  content: Text(response.toString())));
-                          AlertDialog(
-                            content: Text(response.toString()),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(36.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ReusableFormField(
+                        controller: firstName, hint: "First Name"),
+                    ReusableFormField(controller: lastName, hint: "Last Name"),
+                    ReusableFormField(controller: email, hint: "Email Address"),
+                    ReusableFormDateField(
+                        controller: dateOfBirth, hint: "Date of birth"),
+                    ReusableFormField(controller: username, hint: "Username"),
+                    ReusableFormField(
+                      controller: password,
+                      hint: "Password",
+                      isPassword: true,
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState?.save();
+                          UserModel user = UserModel(
+                              firstName: firstName.text,
+                              lastName: lastName.text,
+                              email: email.text,
+                              dateOfBirth: DateTime.parse(dateOfBirth.text),
+                              username: username.text,
+                              password: password.text);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Processing...')),
                           );
-                        } on Exception catch (e) {
-                          print("error");
-                          showDialog(
-                              context: context,
-                              builder: (ctxt) => AlertDialog(
-                                    content: Text(e.toString()),
-                                  ));
+                          try {
+                            var response =
+                                await widget.userService.sendRegisterData(user);
+                            print("success");
+
+                            if (!context.mounted) return;
+                            showDialog(
+                                context: context,
+                                builder: (ctxt) => AlertDialog(
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator
+                                                .pushNamedAndRemoveUntil(
+                                                    context,
+                                                    '/login',
+                                                    ModalRoute.withName('/')),
+                                            child: const Text('Go to Login'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () => Navigator.popUntil(
+                                                context,
+                                                ModalRoute.withName('/')),
+                                            child: const Text('Close'),
+                                          ),
+                                        ],
+                                        content: const Text(
+                                            'Successfully registered account!')));
+                          } on Exception catch (e) {
+                            print(e);
+                            showDialog(
+                                context: context,
+                                builder: (ctxt) => const AlertDialog(
+                                      content: Text(
+                                          "There was an error registering the account."),
+                                    ));
+                          }
                         }
-                      }
-                    },
-                    child: const Text('Sign up'),
-                  ),
-                ],
-              ),
-            )),
+                      },
+                      child: const Text('Sign up'),
+                    ),
+                  ],
+                ),
+              )),
+        ),
       ),
     );
   }

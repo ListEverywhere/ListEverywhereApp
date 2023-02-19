@@ -6,11 +6,15 @@ class ReusableFormField extends StatelessWidget {
       {super.key,
       required this.controller,
       required this.hint,
-      this.isPassword = false});
+      this.isPassword = false,
+      this.minLength = 1,
+      this.maxLength = 64});
 
   final TextEditingController controller;
   final String hint;
   final bool isPassword;
+  final int minLength;
+  final int maxLength;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +28,9 @@ class ReusableFormField extends StatelessWidget {
       controller: controller,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Invalid';
+          return "$hint cannot be blank.";
+        } else if (value.length < minLength || value.length > maxLength) {
+          return "$hint must be between $minLength to $maxLength characters.";
         }
         return null;
       },
@@ -62,7 +68,7 @@ class ReusableFormDateField extends StatelessWidget {
       controller: controller,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Invalid';
+          return '$hint cannot be blank.';
         }
         return null;
       },

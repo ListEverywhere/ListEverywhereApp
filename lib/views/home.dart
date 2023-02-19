@@ -29,7 +29,9 @@ class HomeView extends StatelessWidget {
               child: ReusableButton(
                 color: Colors.amber[200],
                 text: "Sign in",
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, '/login');
+                },
                 padding: const EdgeInsets.all(15.0),
               ),
             ),

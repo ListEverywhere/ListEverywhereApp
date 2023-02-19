@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/Views/home.dart';
+import 'package:listeverywhere_app/views/login.dart';
 import 'package:listeverywhere_app/views/register.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
 
@@ -30,7 +31,8 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => HomeView(),
-          '/register': (context) => RegisterView()
+          '/register': (context) => RegisterView(),
+          '/login': (context) => LoginView()
         });
   }
 }

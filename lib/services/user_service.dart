@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:listeverywhere_app/models/user_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class UserService {
   final String _url = 'http://localhost:8080/users';
+  final storage = const FlutterSecureStorage();
+  static const storageKey = 'ListEverywhereToken';
 
   Future sendRegisterData(UserModel user) async {
     var userJson = jsonEncode(user.toJson());
@@ -52,9 +55,35 @@ class UserService {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       print(data);
-      return data['message'][0];
+
+      String token = data['message'][0];
+
+      await storage.write(key: storageKey, value: token);
+
+      return Future.value(1);
+    } else if (response.statusCode == 400) {
+      return Future.error(
+          Exception('Your username and/or password is incorrect.'));
     } else {
       return Future.error(Exception('Failed to log in.'));
+    }
+  }
+
+  Future getTokenIfSet() async {
+    try {
+      String? token = await storage.read(key: storageKey);
+      return token;
+    } catch (e) {
+      return Future.error(Exception('Error getting token from storage'));
+    }
+  }
+
+  Future logoff() async {
+    try {
+      await storage.delete(key: storageKey);
+      return Future.value(1);
+    } catch (e) {
+      return Future.error(Exception('Failed to log out.'));
     }
   }
 }

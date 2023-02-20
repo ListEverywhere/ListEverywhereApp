@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:listeverywhere_app/Views/home.dart';
+import 'package:listeverywhere_app/views/home.dart';
 import 'package:listeverywhere_app/views/login.dart';
+import 'package:listeverywhere_app/views/my_lists.dart';
 import 'package:listeverywhere_app/views/register.dart';
-import 'package:listeverywhere_app/widgets/reusable_button.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
+        title: 'ListEverywhere',
         theme: ThemeData(
           // This is the theme of your application.
           //
@@ -32,7 +32,8 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => HomeView(),
           '/register': (context) => RegisterView(),
-          '/login': (context) => LoginView()
+          '/login': (context) => LoginView(),
+          '/lists': (context) => MyListsView()
         });
   }
 }

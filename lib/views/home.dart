@@ -9,6 +9,12 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    userService.getTokenIfSet().then((value) {
+      if (value != null) {
+        Navigator.popAndPushNamed(context, '/lists');
+      }
+    });
+
     return Scaffold(
       body: SafeArea(
         child: Column(

@@ -42,13 +42,15 @@ class _LoginViewState extends State<LoginView> {
                       try {
                         response = await widget.userService
                             .login(username.text, password.text);
+                        Navigator.popAndPushNamed(context, '/lists');
                       } catch (e) {
                         response = e.toString();
+                        showDialog(
+                          context: context,
+                          builder: (ctxt) =>
+                              AlertDialog(content: Text(response)),
+                        );
                       }
-                      showDialog(
-                        context: context,
-                        builder: (ctxt) => AlertDialog(content: Text(response)),
-                      );
                     }
                   },
                   child: const Text('Log in'),

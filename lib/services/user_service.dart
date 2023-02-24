@@ -86,4 +86,16 @@ class UserService {
       return Future.error(Exception('Failed to log out.'));
     }
   }
+
+  Future<UserModel> getUserFromToken() async {
+    String token = await getTokenIfSet();
+    var response = await http.get(
+      Uri.parse('$_url/user/'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    var user = UserModel.fromJson(jsonDecode(response.body));
+
+    return user;
+  }
 }

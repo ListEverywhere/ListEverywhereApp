@@ -1,4 +1,6 @@
-class UserModel {
+import 'package:flutter/foundation.dart';
+
+class UserModel extends ChangeNotifier {
   int? id;
   String firstName;
   String lastName;

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/user_model.dart';
 import 'package:listeverywhere_app/views/home.dart';
 import 'package:listeverywhere_app/views/login.dart';
 import 'package:listeverywhere_app/views/my_lists.dart';
 import 'package:listeverywhere_app/views/register.dart';
+import 'package:listeverywhere_app/views/single_list.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -47,7 +49,10 @@ class MyApp extends StatelessWidget {
           '/': (context) => HomeView(),
           '/register': (context) => RegisterView(),
           '/login': (context) => LoginView(),
-          '/lists': (context) => MyListsView()
+          '/lists': (context) => MyListsView(),
+          '/lists/list': (context) => SingleListView(
+              items:
+                  ModalRoute.of(context)?.settings.arguments as List<ItemModel>)
         });
   }
 }

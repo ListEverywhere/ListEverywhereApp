@@ -14,6 +14,8 @@ class ShoppingListEntry extends StatelessWidget {
         splashColor: Colors.amber,
         onTap: () {
           print('Tapped list id ${list.listId}');
+          Navigator.pushNamed(context, '/lists/list',
+              arguments: list.listItems);
         },
         child: SizedBox(
           height: 80.0,

@@ -41,12 +41,23 @@ class MyListsView extends StatelessWidget {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          print('Add new list');
+        },
+        child: const Icon(Icons.add),
+      ),
       body: FutureBuilder<List<ListModel>>(
         future: getLists(),
         builder: (context, snapshot) {
           // waiting for data
           if (snapshot.hasData) {
-            var data = snapshot.data!;
+            List<ListModel> data = snapshot.data!;
+            if (data.isEmpty) {
+              return const Center(
+                child: Text('You do not have any Shopping Lists.'),
+              );
+            }
             return ListView.builder(
               itemCount: data.length,
               itemBuilder: (context, index) {

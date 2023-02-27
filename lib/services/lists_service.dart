@@ -11,6 +11,8 @@ class ListsService {
   Future<List<ListModel>> getUserLists(int userId) async {
     String token = await userService.getTokenIfSet();
 
+    print('starting request');
+
     var response = await http.get(
       Uri.parse('$_url/user/$userId'),
       headers: {'Authorization': 'Bearer $token'},
@@ -18,9 +20,16 @@ class ListsService {
 
     //print(response.body);
 
-    List<dynamic> data = jsonDecode(response.body);
+    var initialData = jsonDecode(response.body);
 
-    //print(data[0]);
+    if (response.statusCode == 404) {
+      print('No lists found.');
+      return [];
+    }
+
+    List<dynamic> data = initialData as List<dynamic>;
+
+    // print(data);
 
     List<ListModel> lists = data
         .map(

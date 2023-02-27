@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
+import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/models/user_model.dart';
 import 'package:listeverywhere_app/views/home.dart';
 import 'package:listeverywhere_app/views/login.dart';
@@ -51,8 +52,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginView(),
           '/lists': (context) => MyListsView(),
           '/lists/list': (context) => SingleListView(
-              items:
-                  ModalRoute.of(context)?.settings.arguments as List<ItemModel>)
+              list: ModalRoute.of(context)?.settings.arguments as ListModel)
         });
   }
 }

@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:listeverywhere_app/constants.dart';
+import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
 
 class ListsService {
   final userService = UserService();
-  final String _url = 'http://localhost:8080/lists';
+  final String _url = '$apiUrl/lists';
 
   Future<List<ListModel>> getUserLists(int userId) async {
     String token = await userService.getTokenIfSet();
@@ -15,7 +17,10 @@ class ListsService {
 
     var response = await http.get(
       Uri.parse('$_url/user/$userId'),
-      headers: {'Authorization': 'Bearer $token'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
     );
 
     //print(response.body);
@@ -38,5 +43,88 @@ class ListsService {
         .toList();
 
     return lists;
+  }
+
+  Future createList(String listName, int userId) async {
+    String token = await userService.getTokenIfSet();
+
+    ListModel list = ListModel(
+        creationDate: DateTime.now(),
+        lastModified: DateTime.now(),
+        listId: -1,
+        userId: userId,
+        listName: listName);
+
+    var response = await http.post(
+      Uri.parse('$_url/'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(list),
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    } else {
+      return Future.error(Exception(initialData['message'][0]));
+    }
+  }
+
+  Future<List<ItemModel>> searchItemsByName(String search) async {
+    var searchData = jsonEncode({'search': search});
+
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.post(
+      Uri.parse(
+        '$apiUrl/items/search/',
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: searchData,
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      List<ItemModel> items = (initialData as List<dynamic>).map(
+        (e) {
+          return ItemModel(
+            itemId: e['food_id'],
+            itemName: e['food_name'],
+          );
+        },
+      ).toList();
+
+      return items;
+    }
+
+    return Future.error(Exception('Error getting items'));
+  }
+
+  Future addItem(ListItemModel listItem) async {
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.post(
+      Uri.parse('$_url/items'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(listItem),
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    }
+
+    return Future.error(Exception(initialData['message'][0]));
   }
 }

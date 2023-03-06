@@ -2,11 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
+import 'package:listeverywhere_app/widgets/reusable_button.dart';
+import 'package:listeverywhere_app/widgets/reusable_field.dart';
 import 'package:listeverywhere_app/widgets/shopping_list_entry.dart';
 
-class MyListsView extends StatelessWidget {
-  MyListsView({super.key});
+class MyListsView extends StatefulWidget {
+  const MyListsView({super.key});
 
+  @override
+  State<StatefulWidget> createState() {
+    return MyListsViewState();
+  }
+}
+
+class MyListsViewState extends State<MyListsView> {
   final userService = UserService();
   final listsService = ListsService();
 
@@ -18,6 +27,50 @@ class MyListsView extends StatelessWidget {
     var user = await userService.getUserFromToken();
     var lists = await listsService.getUserLists(user.id!);
     return lists;
+  }
+
+  Future<void> createNewList(BuildContext context) {
+    TextEditingController listName = TextEditingController();
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Create a new Shopping List'),
+          content: ReusableFormField(controller: listName, hint: 'List Name'),
+          actions: [
+            SizedBox(
+              width: 100,
+              height: 50,
+              child: ReusableButton(
+                padding: const EdgeInsets.all(4.0),
+                text: 'Cancel',
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+            SizedBox(
+              width: 100,
+              height: 50,
+              child: ReusableButton(
+                padding: const EdgeInsets.all(4.0),
+                text: 'Create List',
+                onTap: () async {
+                  var user = await userService.getUserFromToken();
+                  var response = await listsService
+                      .createList(listName.text, user.id!)
+                      .then((value) {
+                    print(value);
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -42,8 +95,10 @@ class MyListsView extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
           print('Add new list');
+          await createNewList(context);
+          setState(() {});
         },
         child: const Icon(Icons.add),
       ),
@@ -64,6 +119,20 @@ class MyListsView extends StatelessWidget {
                 return ShoppingListEntry(list: data[index]);
               },
             );
+          } else if (snapshot.hasError) {
+            print(snapshot.error);
+            return Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(snapshot.error.toString()),
+                ElevatedButton(
+                  onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                      context, '/', (route) => false),
+                  child: const Text('Back'),
+                ),
+              ],
+            ));
           }
           return const Center(child: CircularProgressIndicator());
         },

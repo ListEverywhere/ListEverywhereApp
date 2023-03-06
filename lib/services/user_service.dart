@@ -94,6 +94,11 @@ class UserService {
       headers: {'Authorization': 'Bearer $token'},
     );
 
+    if (response.statusCode == 403) {
+      await logoff();
+      return Future.error(Exception('Session expired, please log in again.'));
+    }
+
     var user = UserModel.fromJson(jsonDecode(response.body));
 
     return user;

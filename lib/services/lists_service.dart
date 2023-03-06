@@ -73,6 +73,22 @@ class ListsService {
     }
   }
 
+  Future<ListModel> getListById(int listId) async {
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.get(
+      Uri.parse('$_url/$listId'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return ListModel.fromJson(initialData);
+    }
+    return Future.error(Exception('Error getting list'));
+  }
+
   Future<List<ItemModel>> searchItemsByName(String search) async {
     var searchData = jsonEncode({'search': search});
 

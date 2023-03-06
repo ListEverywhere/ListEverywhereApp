@@ -32,23 +32,18 @@ class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
         child: Align(
           alignment: Alignment.centerLeft,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Expanded(
-                child: Checkbox(
-                    value: checked,
-                    onChanged: (value) {
-                      setState(() {
-                        checked = value!;
-                      });
-                    }),
-              ),
-              Expanded(
-                flex: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(item.itemName),
-                ),
+              Checkbox(
+                  value: checked,
+                  onChanged: (value) {
+                    setState(() {
+                      checked = value!;
+                    });
+                  }),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(item.itemName),
               ),
             ],
           ),

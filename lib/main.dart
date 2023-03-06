@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginView(),
           '/lists': (context) => MyListsView(),
           '/lists/list': (context) => SingleListView(
-              list: ModalRoute.of(context)?.settings.arguments as ListModel)
+              listId: ModalRoute.of(context)?.settings.arguments as int)
         });
   }
 }

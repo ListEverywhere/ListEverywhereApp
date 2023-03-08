@@ -25,6 +25,8 @@ class SingleListViewState extends State<SingleListView> {
 
   Future<ListModel> getList() async {
     var list = await listsService.getListById(widget.listId);
+    print('getting new list');
+
     listName = list.listName;
     return list;
   }
@@ -127,12 +129,16 @@ class SingleListViewState extends State<SingleListView> {
   }
 
   Widget buildItemList(ListModel list) {
+    print(list.listItems!.length);
     if (list.listItems != null) {
       var items = list.listItems!;
+      print(items);
       return ListView.builder(
         itemCount: items.length,
         itemBuilder: (context, index) {
-          return ShoppingListItemEntry(item: items[index]);
+          print(items[index].itemName);
+          return ShoppingListItemEntry(
+              item: items[index], key: Key(items[index].itemName));
         },
       );
     } else {

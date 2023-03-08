@@ -1,11 +1,12 @@
 import 'dart:convert';
 
+import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class UserService {
-  final String _url = 'http://localhost:8080/users';
+  final String _url = '$apiUrl/users';
   final storage = const FlutterSecureStorage();
   static const storageKey = 'ListEverywhereToken';
 
@@ -48,9 +49,9 @@ class UserService {
           headers: {'Content-Type': 'application/json'},
           body: loginData,
         )
-        .timeout(const Duration(seconds: 2));
+        .timeout(const Duration(seconds: 4));
 
-    //print('Login response: $response');
+    //print('Login response: ${response.statusCode}');
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);

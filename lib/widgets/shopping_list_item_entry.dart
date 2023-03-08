@@ -25,6 +25,7 @@ class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
 
   @override
   Widget build(BuildContext context) {
+    print('Single Item Entry: ${item.itemId}');
     return Card(
       clipBehavior: Clip.hardEdge,
       child: SizedBox(

@@ -9,6 +9,11 @@ class ItemModel {
       : itemId = json['itemId'],
         itemName = json['itemName'],
         checked = json['checked'];
+
+  @override
+  String toString() {
+    return 'ItemModel - ID: $itemId - Name: $itemName';
+  }
 }
 
 class ListItemModel extends ItemModel {

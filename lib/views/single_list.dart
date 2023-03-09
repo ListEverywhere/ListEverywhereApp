@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
@@ -22,6 +21,11 @@ class SingleListViewState extends State<SingleListView> {
   final userService = UserService();
   final listsService = ListsService();
   String listName = '';
+
+  Future onChecked(bool? value, ItemModel item) async {
+    print('updating item checked state');
+    await listsService.updateItem(item);
+  }
 
   Future<ListModel> getList() async {
     var list = await listsService.getListById(widget.listId);
@@ -138,7 +142,10 @@ class SingleListViewState extends State<SingleListView> {
         itemBuilder: (context, index) {
           print(items[index].itemName);
           return ShoppingListItemEntry(
-              item: items[index], key: Key(items[index].itemName));
+            item: items[index],
+            key: Key(items[index].itemName),
+            checkedCallback: onChecked,
+          );
         },
       );
     } else {

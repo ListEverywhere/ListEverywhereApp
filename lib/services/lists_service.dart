@@ -143,4 +143,38 @@ class ListsService {
 
     return Future.error(Exception(initialData['message'][0]));
   }
+
+  Future updateItem(ItemModel item) async {
+    String token = await userService.getTokenIfSet();
+    String url = '$_url/items';
+    dynamic response;
+
+    if (item is CustomListItemModel) {
+      response = await http.put(
+        Uri.parse('$_url/items/custom'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(item),
+      );
+    } else {
+      response = await http.put(
+        Uri.parse('$_url/items'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(item as ListItemModel),
+      );
+    }
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    }
+
+    return Future.error(Exception(initialData['message'][0]));
+  }
 }

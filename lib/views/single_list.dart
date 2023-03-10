@@ -27,6 +27,12 @@ class SingleListViewState extends State<SingleListView> {
     await listsService.updateItem(item);
   }
 
+  Future onDelete(ItemModel item) async {
+    print('deleting item in single list.');
+    await listsService.deleteItem(item);
+    setState(() {});
+  }
+
   Future<ListModel> getList() async {
     var list = await listsService.getListById(widget.listId);
     print('getting new list');
@@ -145,6 +151,7 @@ class SingleListViewState extends State<SingleListView> {
             item: items[index],
             key: Key(items[index].itemName),
             checkedCallback: onChecked,
+            deleteCallback: onDelete,
           );
         },
       );

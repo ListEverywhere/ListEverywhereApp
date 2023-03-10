@@ -177,4 +177,34 @@ class ListsService {
 
     return Future.error(Exception(initialData['message'][0]));
   }
+
+  Future deleteItem(ItemModel item) async {
+    String token = await userService.getTokenIfSet();
+    String url = '$_url/items';
+    dynamic response;
+
+    if (item is CustomListItemModel) {
+      response = await http.delete(
+          Uri.parse('$_url/items/custom/${item.customItemId}'),
+          headers: {
+            'Authorization': 'Bearer $token',
+          });
+    } else {
+      ListItemModel tempItem = item as ListItemModel;
+      response = await http.delete(
+        Uri.parse('$_url/items/${tempItem.listItemId}'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+    }
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    }
+
+    return Future.error(Exception(initialData['message'][0]));
+  }
 }

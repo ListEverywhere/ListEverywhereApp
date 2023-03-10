@@ -6,10 +6,12 @@ class ShoppingListItemEntry extends StatefulWidget {
     super.key,
     required this.item,
     required this.checkedCallback,
+    required this.deleteCallback,
   });
 
   ItemModel item;
-  Function(bool?, ItemModel) checkedCallback;
+  final Function(bool?, ItemModel) checkedCallback;
+  final Function(ItemModel) deleteCallback;
 
   @override
   State<StatefulWidget> createState() {
@@ -20,6 +22,7 @@ class ShoppingListItemEntry extends StatefulWidget {
 class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
   late ItemModel item;
   bool checked = false;
+  bool edit = false;
 
   @override
   void initState() {
@@ -33,22 +36,21 @@ class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
     setState(() {});
   }
 
+  void deleteCallback(ItemModel item) {
+    widget.deleteCallback(item);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     print('Single Item Entry: ${item.itemId}');
     return ItemCard(
       item: item,
       checkedCallback: checkedCallback,
+      deleteCallback: deleteCallback,
+      edit: edit,
     );
   }
-}
-
-class ListItemCard extends ItemCard {
-  const ListItemCard({
-    super.key,
-    required super.item,
-    required super.checkedCallback,
-  });
 }
 
 class ItemCard extends StatelessWidget {
@@ -56,10 +58,14 @@ class ItemCard extends StatelessWidget {
     super.key,
     required this.item,
     required this.checkedCallback,
+    required this.deleteCallback,
+    this.edit = false,
   });
 
   final ItemModel item;
   final Function(bool?, ItemModel) checkedCallback;
+  final Function(ItemModel) deleteCallback;
+  final bool edit;
 
   @override
   Widget build(BuildContext context) {
@@ -68,24 +74,42 @@ class ItemCard extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       child: SizedBox(
         height: 80.0,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Checkbox(
-                  value: checked,
-                  onChanged: (value) {
-                    item.checked = value!;
-                    print('Item ${item.itemId} checked: $value');
-                    checkedCallback(value, item);
-                  }),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(item.itemName),
-              ),
-            ],
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Checkbox(
+                    value: checked,
+                    onChanged: (value) {
+                      item.checked = value!;
+                      print('Item ${item.itemId} checked: $value');
+                      checkedCallback(value, item);
+                    }),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(item.itemName),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.edit),
+                ),
+                IconButton(
+                  onPressed: () {
+                    print('Deleting item ${item.itemName}');
+                    deleteCallback(item);
+                  },
+                  icon: const Icon(Icons.delete_forever),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

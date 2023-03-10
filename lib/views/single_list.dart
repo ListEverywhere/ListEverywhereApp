@@ -41,17 +41,50 @@ class SingleListViewState extends State<SingleListView> {
     return list;
   }
 
-  Future<void> addNewItem(BuildContext context) {
+  Future<void> addItem(ItemModel? item) async {
+    var user = await userService.getUserFromToken();
+    if (item != null) {
+      var listItem = ListItemModel(
+        checked: false,
+        itemId: item.itemId,
+        listItemId: -1,
+        listId: widget.listId,
+      );
+      var response = await listsService.addItem(listItem).then((value) {
+        print(value);
+        Navigator.pop(context);
+      });
+    }
+  }
+
+  Future<void> editItem(ItemModel? item) async {
+    print('updating item in single list');
+    print(item);
+    await listsService.updateItem(item!).then((value) {
+      Navigator.pop(context);
+    });
+  }
+
+  Future<void> onUpdate(ItemModel item) async {
+    await updateItem(context, item, 'Updating item', 'Update', editItem);
+    setState(() {});
+  }
+
+  Future<void> updateItem(BuildContext context, ItemModel? item,
+      String alertText, String submitText, Function(ItemModel?) onSubmit) {
     TextEditingController itemName = TextEditingController();
-    ItemModel? item;
+    ItemModel? originalItem = item;
+    ItemModel? newItem;
     List<ItemModel> items = [];
+
+    if (originalItem != null) itemName.text = originalItem.itemName;
 
     return showDialog(
       context: context,
       builder: (context) {
         return StatefulBuilder(builder: ((context, setState) {
           return AlertDialog(
-            title: const Text('Add an item to your list'),
+            title: Text(alertText),
             content: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -78,7 +111,7 @@ class SingleListViewState extends State<SingleListView> {
                   ],
                 ),
                 DropdownButton<ItemModel>(
-                  value: item,
+                  value: newItem,
                   items: items
                       .map<DropdownMenuItem<ItemModel>>(
                           (e) => DropdownMenuItem<ItemModel>(
@@ -88,8 +121,8 @@ class SingleListViewState extends State<SingleListView> {
                       .toList(),
                   onChanged: (value) {
                     setState(() {
-                      item = value;
-                      print(item!.itemName);
+                      newItem = value;
+                      print(newItem!.itemName);
                     });
                   },
                 ),
@@ -112,21 +145,13 @@ class SingleListViewState extends State<SingleListView> {
                 height: 50,
                 child: ReusableButton(
                   padding: const EdgeInsets.all(4.0),
-                  text: 'Add Item',
-                  onTap: () async {
-                    var user = await userService.getUserFromToken();
-                    if (item != null) {
-                      var listItem = ListItemModel(
-                        checked: false,
-                        itemId: item!.itemId,
-                        listItemId: -1,
-                        listId: widget.listId,
-                      );
-                      var response =
-                          await listsService.addItem(listItem).then((value) {
-                        print(value);
-                        Navigator.pop(context);
-                      });
+                  text: submitText,
+                  onTap: () {
+                    if (originalItem != null) {
+                      originalItem.itemId = newItem!.itemId;
+                      onSubmit(originalItem);
+                    } else {
+                      onSubmit(newItem);
                     }
                   },
                 ),
@@ -152,6 +177,7 @@ class SingleListViewState extends State<SingleListView> {
             key: Key(items[index].itemName),
             checkedCallback: onChecked,
             deleteCallback: onDelete,
+            updateCallback: onUpdate,
           );
         },
       );
@@ -169,7 +195,8 @@ class SingleListViewState extends State<SingleListView> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             print('Add new list item');
-            await addNewItem(context);
+            await updateItem(
+                context, null, 'Add an item to your list', 'Add item', addItem);
             setState(() {});
           },
           child: const Icon(Icons.add),
@@ -178,6 +205,10 @@ class SingleListViewState extends State<SingleListView> {
           future: getList(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              if (snapshot.data!.listItems!.isEmpty) {
+                return const Center(
+                    child: Text('There are no items in this list.'));
+              }
               return buildItemList(snapshot.data!);
             }
             return const Center(child: CircularProgressIndicator());

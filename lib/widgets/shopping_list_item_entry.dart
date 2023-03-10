@@ -7,11 +7,13 @@ class ShoppingListItemEntry extends StatefulWidget {
     required this.item,
     required this.checkedCallback,
     required this.deleteCallback,
+    required this.updateCallback,
   });
 
   ItemModel item;
   final Function(bool?, ItemModel) checkedCallback;
   final Function(ItemModel) deleteCallback;
+  final Function(ItemModel) updateCallback;
 
   @override
   State<StatefulWidget> createState() {
@@ -41,6 +43,11 @@ class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
     setState(() {});
   }
 
+  void updateCallback(ItemModel item) {
+    widget.updateCallback(item);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     print('Single Item Entry: ${item.itemId}');
@@ -48,6 +55,7 @@ class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
       item: item,
       checkedCallback: checkedCallback,
       deleteCallback: deleteCallback,
+      updateCallback: updateCallback,
       edit: edit,
     );
   }
@@ -59,12 +67,14 @@ class ItemCard extends StatelessWidget {
     required this.item,
     required this.checkedCallback,
     required this.deleteCallback,
+    required this.updateCallback,
     this.edit = false,
   });
 
   final ItemModel item;
   final Function(bool?, ItemModel) checkedCallback;
   final Function(ItemModel) deleteCallback;
+  final Function(ItemModel) updateCallback;
   final bool edit;
 
   @override
@@ -97,7 +107,10 @@ class ItemCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    print('Updating item ${item.itemName}');
+                    updateCallback(item);
+                  },
                   icon: const Icon(Icons.edit),
                 ),
                 IconButton(

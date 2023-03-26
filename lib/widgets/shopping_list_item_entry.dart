@@ -50,7 +50,6 @@ class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
 
   @override
   Widget build(BuildContext context) {
-    print('Single Item Entry: ${item.itemId}');
     return ItemCard(
       item: item,
       checkedCallback: checkedCallback,
@@ -119,6 +118,10 @@ class ItemCard extends StatelessWidget {
                     deleteCallback(item);
                   },
                   icon: const Icon(Icons.delete_forever),
+                ),
+                ReorderableDragStartListener(
+                  index: item.position,
+                  child: const Icon(Icons.drag_handle),
                 ),
               ],
             ),

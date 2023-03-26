@@ -16,7 +16,7 @@ class ListsService {
     print('starting request');
 
     var response = await http.get(
-      Uri.parse('$_url/user/$userId'),
+      Uri.parse('$_url/user/$userId?noItems=true'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -94,16 +94,23 @@ class ListsService {
 
     String token = await userService.getTokenIfSet();
 
-    var response = await http.post(
-      Uri.parse(
-        '$apiUrl/items/search/',
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: searchData,
-    );
+    dynamic response;
+
+    try {
+      response = await http.post(
+        Uri.parse(
+          '$apiUrl/items/search/',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: searchData,
+      );
+    } catch (e) {
+      print(e);
+      return Future.error(Exception("Failed to find items."));
+    }
 
     var initialData = jsonDecode(response.body);
 
@@ -144,14 +151,14 @@ class ListsService {
     return Future.error(Exception(initialData['message'][0]));
   }
 
-  Future updateItem(ItemModel item) async {
+  Future updateItem(ItemModel item, bool updatePosition) async {
     String token = await userService.getTokenIfSet();
     String url = '$_url/items';
     dynamic response;
 
     if (item is CustomListItemModel) {
       response = await http.put(
-        Uri.parse('$_url/items/custom'),
+        Uri.parse('$url/custom${updatePosition ? '/position' : ''}'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -160,7 +167,7 @@ class ListsService {
       );
     } else {
       response = await http.put(
-        Uri.parse('$_url/items'),
+        Uri.parse('$url${updatePosition ? '/position' : ''}'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

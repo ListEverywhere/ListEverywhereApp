@@ -24,7 +24,7 @@ class SingleListViewState extends State<SingleListView> {
 
   Future onChecked(bool? value, ItemModel item) async {
     print('updating item checked state');
-    await listsService.updateItem(item);
+    await listsService.updateItem(item, false);
   }
 
   Future onDelete(ItemModel item) async {
@@ -49,6 +49,7 @@ class SingleListViewState extends State<SingleListView> {
         itemId: item.itemId,
         listItemId: -1,
         listId: widget.listId,
+        position: -1,
       );
       var response = await listsService.addItem(listItem).then((value) {
         print(value);
@@ -60,7 +61,7 @@ class SingleListViewState extends State<SingleListView> {
   Future<void> editItem(ItemModel? item) async {
     print('updating item in single list');
     print(item);
-    await listsService.updateItem(item!).then((value) {
+    await listsService.updateItem(item!, false).then((value) {
       Navigator.pop(context);
     });
   }
@@ -82,99 +83,146 @@ class SingleListViewState extends State<SingleListView> {
     return showDialog(
       context: context,
       builder: (context) {
-        return StatefulBuilder(builder: ((context, setState) {
-          return AlertDialog(
-            title: Text(alertText),
-            content: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return ScaffoldMessenger(
+          child: StatefulBuilder(builder: ((innerContext, setState) {
+            return Scaffold(
+              backgroundColor: Colors.transparent,
+              body: AlertDialog(
+                title: Text(alertText),
+                content: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      flex: 5,
-                      child: ReusableFormField(
-                          controller: itemName, hint: 'Item Name'),
+                    const Text(
+                      'Enter your item name, then press the search icon',
+                      style: TextStyle(fontSize: 12.0),
                     ),
-                    Expanded(
-                      child: IconButton(
-                          onPressed: () async {
-                            var newItems = await listsService
-                                .searchItemsByName(itemName.text);
-                            setState(() {
-                              items = newItems;
-                            });
-                          },
-                          icon: const Icon(Icons.search)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: ReusableFormField(
+                              controller: itemName, hint: 'Item Name'),
+                        ),
+                        Expanded(
+                          child: IconButton(
+                              onPressed: () async {
+                                var newItems = await listsService
+                                    .searchItemsByName(itemName.text)
+                                    .then((value) {
+                                  if (value.isEmpty) {
+                                  } else {
+                                    setState(() {
+                                      items = value;
+                                      newItem = items.first;
+                                    });
+                                  }
+                                }).onError((error, stackTrace) {
+                                  ScaffoldMessenger.of(innerContext)
+                                      .showSnackBar(SnackBar(
+                                    content: const Text('Failed to get items.'),
+                                    backgroundColor: Colors.red[400],
+                                  ));
+                                });
+                              },
+                              icon: const Icon(Icons.search)),
+                        ),
+                      ],
+                    ),
+                    DropdownButton<ItemModel>(
+                      value: newItem,
+                      items: items
+                          .map<DropdownMenuItem<ItemModel>>(
+                              (e) => DropdownMenuItem<ItemModel>(
+                                    value: e,
+                                    child: Text(e.itemName),
+                                  ))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          newItem = value;
+                          print(newItem!.itemName);
+                        });
+                      },
                     ),
                   ],
                 ),
-                DropdownButton<ItemModel>(
-                  value: newItem,
-                  items: items
-                      .map<DropdownMenuItem<ItemModel>>(
-                          (e) => DropdownMenuItem<ItemModel>(
-                                value: e,
-                                child: Text(e.itemName),
-                              ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      newItem = value;
-                      print(newItem!.itemName);
-                    });
-                  },
-                ),
-              ],
-            ),
-            actions: [
-              SizedBox(
-                width: 100,
-                height: 50,
-                child: ReusableButton(
-                  padding: const EdgeInsets.all(4.0),
-                  text: 'Cancel',
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
+                actions: [
+                  SizedBox(
+                    width: 100,
+                    height: 50,
+                    child: ReusableButton(
+                      padding: const EdgeInsets.all(4.0),
+                      text: 'Cancel',
+                      onTap: () {
+                        Navigator.pop(innerContext);
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 100,
+                    height: 50,
+                    child: ReusableButton(
+                      padding: const EdgeInsets.all(4.0),
+                      text: submitText,
+                      onTap: () {
+                        if (originalItem != null) {
+                          originalItem.itemId = newItem!.itemId;
+                          onSubmit(originalItem);
+                        } else {
+                          onSubmit(newItem);
+                        }
+                      },
+                    ),
+                  )
+                ],
               ),
-              SizedBox(
-                width: 100,
-                height: 50,
-                child: ReusableButton(
-                  padding: const EdgeInsets.all(4.0),
-                  text: submitText,
-                  onTap: () {
-                    if (originalItem != null) {
-                      originalItem.itemId = newItem!.itemId;
-                      onSubmit(originalItem);
-                    } else {
-                      onSubmit(newItem);
-                    }
-                  },
-                ),
-              )
-            ],
-          );
-        }));
+            );
+          })),
+        );
       },
     );
   }
 
   Widget buildItemList(ListModel list) {
-    print(list.listItems!.length);
+    //print(list.listItems!.length);
     if (list.listItems != null) {
       var items = list.listItems!;
-      print(items);
-      return ListView.builder(
+      //print(items);
+      return ReorderableListView.builder(
+        buildDefaultDragHandles: false,
+        onReorder: (oldIndex, newIndex) async {
+          if (oldIndex < newIndex) {
+            newIndex--;
+          }
+
+          print('oldIndex: $oldIndex | newIndex $newIndex');
+
+          ItemModel current = items.removeAt(oldIndex);
+
+          current.position = newIndex;
+
+          items.insert(newIndex, current);
+
+          if (oldIndex != newIndex) {
+            // update item position
+            for (int i = 0; i < items.length; i++) {
+              items[i].position = i;
+            }
+            // update position in API
+            print('Updating item: $current to position $newIndex');
+            var response = await listsService.updateItem(current, true);
+            print('Response: $response');
+          }
+        },
         itemCount: items.length,
         itemBuilder: (context, index) {
-          print(items[index].itemName);
+          //print(items[index].itemName);
           return ShoppingListItemEntry(
             item: items[index],
-            key: Key(items[index].itemName),
+            key: Key(items[index].hashCode.toString()),
             checkedCallback: onChecked,
             deleteCallback: onDelete,
             updateCallback: onUpdate,

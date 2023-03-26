@@ -78,6 +78,7 @@ class MyListsViewState extends State<MyListsView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Lists'),
+        automaticallyImplyLeading: false,
         actions: [
           Padding(
             padding: const EdgeInsets.all(4.0),

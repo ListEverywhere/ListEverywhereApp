@@ -90,10 +90,18 @@ class UserService {
 
   Future<UserModel> getUserFromToken() async {
     String token = await getTokenIfSet();
-    var response = await http.get(
-      Uri.parse('$_url/user/'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
+
+    dynamic response;
+
+    try {
+      response = await http.get(
+        Uri.parse('$_url/user/'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+    } catch (e) {
+      print(e);
+      return Future.error("Failed to connect to the server.");
+    }
 
     if (response.statusCode == 403) {
       await logoff();

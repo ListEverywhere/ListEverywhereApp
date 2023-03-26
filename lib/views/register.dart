@@ -27,6 +27,9 @@ class RegisterViewState extends State<RegisterView> {
     TextEditingController password = TextEditingController();
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Sign up for ListEverywhere"),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,

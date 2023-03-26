@@ -2,13 +2,19 @@ class ItemModel {
   int itemId;
   String itemName;
   bool checked;
+  int position;
 
-  ItemModel({this.itemId = -1, this.itemName = "", this.checked = false});
+  ItemModel(
+      {this.itemId = -1,
+      this.itemName = "",
+      this.checked = false,
+      this.position = -1});
 
   ItemModel.fromJson(Map<String, dynamic> json)
       : itemId = json['itemId'],
         itemName = json['itemName'],
-        checked = json['checked'];
+        checked = json['checked'],
+        position = json['position'];
 
   @override
   String toString() {
@@ -24,6 +30,7 @@ class ListItemModel extends ItemModel {
       {required super.itemId,
       super.itemName,
       required super.checked,
+      required super.position,
       required this.listItemId,
       required this.listId});
 
@@ -32,7 +39,8 @@ class ListItemModel extends ItemModel {
       'itemId': itemId,
       'checked': checked,
       'listItemId': listItemId,
-      'listId': listId
+      'listId': listId,
+      'position': position
     };
   }
 
@@ -43,6 +51,7 @@ class ListItemModel extends ItemModel {
       itemId: item.itemId,
       itemName: item.itemName,
       checked: item.checked,
+      position: item.position,
       listItemId: json['listItemId'],
       listId: json['listId'],
     );
@@ -56,6 +65,7 @@ class CustomListItemModel extends ItemModel {
   CustomListItemModel({
     required super.itemName,
     required super.checked,
+    required super.position,
     required this.listId,
     required this.customItemId,
   });
@@ -65,7 +75,8 @@ class CustomListItemModel extends ItemModel {
       'itemName': itemName,
       'checked': checked,
       'listId': listId,
-      'customItemId': customItemId
+      'customItemId': customItemId,
+      'position': position,
     };
   }
 
@@ -75,6 +86,7 @@ class CustomListItemModel extends ItemModel {
     return CustomListItemModel(
       itemName: item.itemName,
       checked: item.checked,
+      position: item.position,
       listId: json['listId'],
       customItemId: json['customItemId'],
     );

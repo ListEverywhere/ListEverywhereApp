@@ -22,14 +22,16 @@ class ListModel {
         listName = json['listName'],
         creationDate = DateTime.parse(json['creationDate']),
         lastModified = DateTime.parse(json['lastModified']),
-        listItems = (json['listItems'] as List<dynamic>).map((e) {
-          //return ItemModel.fromJson(e);
-          if (e['itemId'] == -1) {
-            return CustomListItemModel.fromJson(e);
-          } else {
-            return ListItemModel.fromJson(e);
-          }
-        }).toList();
+        listItems = json['listItems'] != null
+            ? (json['listItems'] as List<dynamic>).map((e) {
+                //return ItemModel.fromJson(e);
+                if (e['itemId'] == -1) {
+                  return CustomListItemModel.fromJson(e);
+                } else {
+                  return ListItemModel.fromJson(e);
+                }
+              }).toList()
+            : null;
 
   Map<String, dynamic> toJson() {
     return {

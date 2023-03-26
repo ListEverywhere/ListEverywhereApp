@@ -89,6 +89,45 @@ class ListsService {
     return Future.error(Exception('Error getting list'));
   }
 
+  Future updateList(ListModel list) async {
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.put(
+      Uri.parse('$_url/'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(list),
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    }
+
+    return Future.error(Exception(initialData['message'][0]));
+  }
+
+  Future deleteList(int list_id) async {
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.delete(
+      Uri.parse('$_url/$list_id'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    }
+
+    return Future.error(Exception('Failed to delete list.'));
+  }
+
   Future<List<ItemModel>> searchItemsByName(String search) async {
     var searchData = jsonEncode({'search': search});
 

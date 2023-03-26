@@ -29,14 +29,51 @@ class MyListsViewState extends State<MyListsView> {
     return lists;
   }
 
-  Future<void> createNewList(BuildContext context) {
+  Future<void> addList(ListModel? list) async {
+    if (list != null) {
+      var user = await userService.getUserFromToken();
+      list.userId = user.id!;
+      var response =
+          await listsService.createList(list.listName, user.id!).then((value) {
+        print(value);
+        Navigator.pop(context);
+      });
+    }
+  }
+
+  Future<void> updateList(ListModel? list) async {
+    if (list != null) {
+      var response = await listsService.updateList(list).then((value) {
+        print(value);
+        Navigator.pop(context);
+      });
+    }
+  }
+
+  Future<void> deleteList(int listId) async {
+    await listsService.deleteList(listId);
+  }
+
+  Future<void> showUpdateList(BuildContext context, ListModel list) async {
+    await updateListDialog(
+        context, list, 'Updating list', 'Submit', updateList);
+  }
+
+  Future<void> createNewList(BuildContext context) async {
+    await updateListDialog(
+        context, null, 'Create a new Shopping List', 'Submit', addList);
+  }
+
+  Future<void> updateListDialog(BuildContext context, ListModel? list,
+      String alertText, String submitText, Function(ListModel?) onSubmit) {
     TextEditingController listName = TextEditingController();
+    listName.text = list != null ? list.listName : '';
 
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Create a new Shopping List'),
+          title: Text(alertText),
           content: ReusableFormField(controller: listName, hint: 'List Name'),
           actions: [
             SizedBox(
@@ -55,15 +92,20 @@ class MyListsViewState extends State<MyListsView> {
               height: 50,
               child: ReusableButton(
                 padding: const EdgeInsets.all(4.0),
-                text: 'Create List',
+                text: submitText,
                 onTap: () async {
-                  var user = await userService.getUserFromToken();
-                  var response = await listsService
-                      .createList(listName.text, user.id!)
-                      .then((value) {
-                    print(value);
-                    Navigator.pop(context);
-                  });
+                  if (list != null) {
+                    list.listName = listName.text;
+                    onSubmit(list);
+                  } else {
+                    ListModel newList = ListModel(
+                        listId: -1,
+                        userId: -1,
+                        listName: listName.text,
+                        creationDate: DateTime.now(),
+                        lastModified: DateTime.now());
+                    onSubmit(newList);
+                  }
                 },
               ),
             )
@@ -117,7 +159,17 @@ class MyListsViewState extends State<MyListsView> {
             return ListView.builder(
               itemCount: data.length,
               itemBuilder: (context, index) {
-                return ShoppingListEntry(list: data[index]);
+                return ShoppingListEntry(
+                  list: data[index],
+                  updateCallback: (list) async {
+                    await showUpdateList(context, list);
+                    setState(() {});
+                  },
+                  deleteCallback: (id) async {
+                    await deleteList(id);
+                    setState(() {});
+                  },
+                );
               },
             );
           } else if (snapshot.hasError) {

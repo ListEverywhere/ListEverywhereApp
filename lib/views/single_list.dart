@@ -109,7 +109,7 @@ class SingleListViewState extends State<SingleListView> {
                         Expanded(
                           child: IconButton(
                               onPressed: () async {
-                                var newItems = await listsService
+                                await listsService
                                     .searchItemsByName(itemName.text)
                                     .then((value) {
                                   if (value.isEmpty) {

@@ -92,3 +92,34 @@ class CustomListItemModel extends ItemModel {
     );
   }
 }
+
+class RecipeItemModel extends ItemModel {
+  int recipeItemId;
+  int recipeId;
+
+  RecipeItemModel({
+    required super.itemId,
+    super.itemName,
+    required this.recipeItemId,
+    required this.recipeId,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'itemId': itemId,
+      'recipeItemId': recipeItemId,
+      'recipeId': recipeId,
+    };
+  }
+
+  factory RecipeItemModel.fromJson(Map<String, dynamic> json) {
+    ItemModel item = ItemModel.fromJson(json);
+
+    return RecipeItemModel(
+      itemId: item.itemId,
+      itemName: item.itemName,
+      recipeItemId: json['recipeItemId'],
+      recipeId: json['recipeId'],
+    );
+  }
+}

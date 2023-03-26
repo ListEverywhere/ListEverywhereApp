@@ -20,6 +20,9 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Sign in to ListEverywhere"),
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,

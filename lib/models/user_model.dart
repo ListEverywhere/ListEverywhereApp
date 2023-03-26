@@ -1,26 +1,30 @@
-class UserModel {
+import 'package:flutter/foundation.dart';
+
+class UserModel extends ChangeNotifier {
   int? id;
-  String firstName;
-  String lastName;
-  String email;
-  DateTime dateOfBirth;
-  String username;
-  String password;
+  String? firstName;
+  String? lastName;
+  String? email;
+  DateTime? dateOfBirth;
+  String? username;
+  String? password;
 
   UserModel(
-      {required this.firstName,
-      required this.lastName,
-      required this.email,
-      required this.dateOfBirth,
-      required this.username,
-      required this.password});
+      {this.firstName,
+      this.lastName,
+      this.email,
+      this.dateOfBirth,
+      this.username,
+      this.password});
 
   UserModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         firstName = json['firstName'],
         lastName = json['lastName'],
         email = json['email'],
-        dateOfBirth = DateTime.parse(json['dateOfBirth']),
+        dateOfBirth = json['dateOfBirth'] != null
+            ? DateTime.parse(json['dateOfBirth'])
+            : null,
         username = json['username'],
         password = json['password'];
 
@@ -30,7 +34,7 @@ class UserModel {
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
-      'dateOfBirth': dateOfBirth.toIso8601String(),
+      'dateOfBirth': dateOfBirth!.toIso8601String(),
       'username': username,
       'password': password
     };

@@ -169,17 +169,30 @@ class ListsService {
     return Future.error(Exception('Error getting items'));
   }
 
-  Future addItem(ListItemModel listItem) async {
+  Future addItem(ItemModel item) async {
     String token = await userService.getTokenIfSet();
+    String url = '$_url/items';
+    dynamic response;
 
-    var response = await http.post(
-      Uri.parse('$_url/items'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(listItem),
-    );
+    if (item is CustomListItemModel) {
+      response = await http.post(
+        Uri.parse('$url/custom'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(item),
+      );
+    } else if (item is ListItemModel) {
+      response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(item),
+      );
+    }
 
     var initialData = jsonDecode(response.body);
 

@@ -44,14 +44,7 @@ class SingleListViewState extends State<SingleListView> {
   Future<void> addItem(ItemModel? item) async {
     var user = await userService.getUserFromToken();
     if (item != null) {
-      var listItem = ListItemModel(
-        checked: false,
-        itemId: item.itemId,
-        listItemId: -1,
-        listId: widget.listId,
-        position: -1,
-      );
-      var response = await listsService.addItem(listItem).then((value) {
+      var response = await listsService.addItem(item).then((value) {
         print(value);
         Navigator.pop(context);
       });
@@ -77,6 +70,19 @@ class SingleListViewState extends State<SingleListView> {
     ItemModel? originalItem = item;
     ItemModel? newItem;
     List<ItemModel> items = [];
+    bool isCustom = false;
+    bool disableCheckbox = false;
+    bool hideCheckbox = false;
+
+    if (item != null) {
+      if (item is CustomListItemModel) {
+        disableCheckbox = true;
+        isCustom = true;
+      } else if (item is ListItemModel) {
+        hideCheckbox = true;
+        print(hideCheckbox);
+      }
+    }
 
     if (originalItem != null) itemName.text = originalItem.itemName;
 
@@ -106,46 +112,71 @@ class SingleListViewState extends State<SingleListView> {
                           child: ReusableFormField(
                               controller: itemName, hint: 'Item Name'),
                         ),
-                        Expanded(
-                          child: IconButton(
-                              onPressed: () async {
-                                await listsService
-                                    .searchItemsByName(itemName.text)
-                                    .then((value) {
-                                  if (value.isEmpty) {
-                                  } else {
-                                    setState(() {
-                                      items = value;
-                                      newItem = items.first;
-                                    });
-                                  }
-                                }).onError((error, stackTrace) {
-                                  ScaffoldMessenger.of(innerContext)
-                                      .showSnackBar(SnackBar(
-                                    content: const Text('Failed to get items.'),
-                                    backgroundColor: Colors.red[400],
-                                  ));
-                                });
-                              },
-                              icon: const Icon(Icons.search)),
-                        ),
+                        if (!isCustom)
+                          Expanded(
+                            child: IconButton(
+                                onPressed: () async {
+                                  await listsService
+                                      .searchItemsByName(itemName.text)
+                                      .then((value) {
+                                    if (value.isEmpty) {
+                                    } else {
+                                      setState(() {
+                                        items = value;
+                                        newItem = items.first;
+                                      });
+                                    }
+                                  }).onError((error, stackTrace) {
+                                    ScaffoldMessenger.of(innerContext)
+                                        .showSnackBar(SnackBar(
+                                      content:
+                                          const Text('Failed to get items.'),
+                                      backgroundColor: Colors.red[400],
+                                    ));
+                                  });
+                                },
+                                icon: const Icon(Icons.search)),
+                          ),
                       ],
                     ),
-                    DropdownButton<ItemModel>(
-                      value: newItem,
-                      items: items
-                          .map<DropdownMenuItem<ItemModel>>(
-                              (e) => DropdownMenuItem<ItemModel>(
-                                    value: e,
-                                    child: Text(e.itemName),
-                                  ))
-                          .toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          newItem = value;
-                          print(newItem!.itemName);
-                        });
-                      },
+                    if (!isCustom)
+                      DropdownButton<ItemModel>(
+                        value: newItem,
+                        items: items
+                            .map<DropdownMenuItem<ItemModel>>(
+                                (e) => DropdownMenuItem<ItemModel>(
+                                      value: e,
+                                      child: Text(e.itemName),
+                                    ))
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            newItem = value;
+                            print(newItem!.itemName);
+                          });
+                        },
+                      ),
+                    if (!hideCheckbox)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Checkbox(
+                            value: isCustom,
+                            onChanged: (value) {
+                              setState(() {
+                                isCustom = disableCheckbox ? true : value!;
+                              });
+                            },
+                          ),
+                          const Text('I can\'t find my item'),
+                        ],
+                      ),
+                    Text(
+                      isCustom
+                          ? 'This item will be added as a custom item.\nIt cannot be used for recipe matching.'
+                          : '',
+                      style: const TextStyle(fontSize: 12.0),
                     ),
                   ],
                 ),
@@ -169,9 +200,28 @@ class SingleListViewState extends State<SingleListView> {
                       text: submitText,
                       onTap: () {
                         if (originalItem != null) {
-                          originalItem.itemId = newItem!.itemId;
+                          originalItem.itemId =
+                              originalItem.itemId >= 0 ? newItem!.itemId : -1;
+                          originalItem.itemName = itemName.text;
                           onSubmit(originalItem);
                         } else {
+                          if (isCustom) {
+                            newItem = CustomListItemModel(
+                                itemName: itemName.text,
+                                checked: false,
+                                position: -1,
+                                listId: widget.listId,
+                                customItemId: -1);
+                          } else {
+                            int itemId = newItem!.itemId;
+                            newItem = ListItemModel(
+                              checked: false,
+                              itemId: itemId,
+                              listItemId: -1,
+                              listId: widget.listId,
+                              position: -1,
+                            );
+                          }
                           onSubmit(newItem);
                         }
                       },

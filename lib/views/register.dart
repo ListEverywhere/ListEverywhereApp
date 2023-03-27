@@ -54,16 +54,39 @@ class RegisterViewState extends State<RegisterView> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ReusableFormField(
-                        controller: firstName, hint: "First Name"),
-                    ReusableFormField(controller: lastName, hint: "Last Name"),
-                    ReusableFormField(controller: email, hint: "Email Address"),
+                      controller: firstName,
+                      hint: "First Name",
+                      minLength: 5,
+                      maxLength: 25,
+                    ),
+                    ReusableFormField(
+                      controller: lastName,
+                      hint: "Last Name",
+                      minLength: 5,
+                      maxLength: 25,
+                    ),
+                    ReusableFormField(
+                      controller: email,
+                      hint: "Email Address",
+                      minLength: 4,
+                      maxLength: 50,
+                    ),
                     ReusableFormDateField(
-                        controller: dateOfBirth, hint: "Date of birth"),
-                    ReusableFormField(controller: username, hint: "Username"),
+                      controller: dateOfBirth,
+                      hint: "Date of birth",
+                    ),
+                    ReusableFormField(
+                      controller: username,
+                      hint: "Username",
+                      minLength: 5,
+                      maxLength: 20,
+                    ),
                     ReusableFormField(
                       controller: password,
                       hint: "Password",
                       isPassword: true,
+                      minLength: 8,
+                      maxLength: 32,
                     ),
                     ElevatedButton(
                       onPressed: () async {

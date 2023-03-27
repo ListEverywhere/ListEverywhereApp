@@ -52,10 +52,15 @@ class ReusableFormField extends StatelessWidget {
 /// A single form field containing a date picker
 class ReusableFormDateField extends StatelessWidget {
   const ReusableFormDateField(
-      {super.key, required this.controller, required this.hint});
+      {super.key,
+      required this.controller,
+      required this.hint,
+      this.minAge = 13});
 
   /// Stores the date text
   final TextEditingController controller;
+
+  final int minAge;
 
   /// Text displayed when field is blank
   final String hint;
@@ -86,6 +91,10 @@ class ReusableFormDateField extends StatelessWidget {
         // validate constraints
         if (value == null || value.isEmpty) {
           return '$hint cannot be blank.';
+        }
+        int valueYear = DateTime.parse(value).year;
+        if (DateTime.now().year - valueYear < minAge) {
+          return 'You must be $minAge years or older to register';
         }
         return null;
       },

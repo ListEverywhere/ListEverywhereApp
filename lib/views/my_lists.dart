@@ -35,7 +35,7 @@ class MyListsViewState extends State<MyListsView> {
 
   /// Creates a new shopping list
   Future<void> addList(ListModel? list) async {
-    if (list != null) {
+    if (list != null && list.listName.isNotEmpty) {
       // get user details
       var user = await userService.getUserFromToken();
       // set user id in new shopping list
@@ -52,7 +52,7 @@ class MyListsViewState extends State<MyListsView> {
 
   /// Updates a shopping list
   Future<void> updateList(ListModel? list) async {
-    if (list != null) {
+    if (list != null && list.listName.isNotEmpty) {
       // use lists service to update the list
       var response = await listsService.updateList(list).then((value) {
         print(value);

@@ -38,11 +38,18 @@ class _LoginViewState extends State<LoginView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ReusableFormField(controller: username, hint: 'Username'),
+                ReusableFormField(
+                  controller: username,
+                  hint: 'Username',
+                  minLength: 5,
+                  maxLength: 20,
+                ),
                 ReusableFormField(
                   controller: password,
                   hint: 'Password',
                   isPassword: true,
+                  minLength: 8,
+                  maxLength: 32,
                 ),
                 ElevatedButton(
                   onPressed: () async {

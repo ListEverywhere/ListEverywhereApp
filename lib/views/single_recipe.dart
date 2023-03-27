@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/services/recipes_service.dart';
 
+/// Provides the view for a single recipe object from the given [recipeId]
 class SingleRecipeView extends StatefulWidget {
   SingleRecipeView({super.key, required this.recipeId});
 
+  /// Recipe ID to load
   final int recipeId;
 
   @override
@@ -14,14 +16,18 @@ class SingleRecipeView extends StatefulWidget {
 }
 
 class SingleRecipeViewState extends State<SingleRecipeView> {
+  /// instance of RecipesService
   final recipesService = RecipesService();
 
+  /// Returns a RecipeModel object for the recipe id given
   Future<RecipeModel> getRecipe() async {
+    // use recipes service to get recipe
     var recipe = await recipesService.getRecipeById(widget.recipeId);
 
     return recipe;
   }
 
+  /// Returns a ListView containing numbered entries for each string in [items]
   ListView buildList(List<String> items) {
     return ListView.builder(
       primary: false,
@@ -31,6 +37,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
         return Padding(
           padding: const EdgeInsets.all(4.0),
           child: ListTile(
+            // create number index Text at start of ListTile
             leading: Text(
               '${index + 1}.',
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -49,10 +56,14 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
         title: const Text('Viewing Recipe'),
       ),
       body: FutureBuilder(
+        // when getRecipe returns recipe model, build view
         future: getRecipe(),
         builder: (context, snapshot) {
+          // check if data is available
           if (snapshot.hasData) {
+            // data is received
             RecipeModel recipe = snapshot.data!;
+            // return scrollable view
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -73,6 +84,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
                     const Text('Ingredients:',
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.w500)),
+                    // build list of recipe items
                     buildList(
                       recipe.recipeItems!
                           .map<String>((e) => e.itemName)
@@ -82,6 +94,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
                     const Text('Steps:',
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.w500)),
+                    // build list of recipe steps
                     buildList(
                       recipe.recipeSteps!
                           .map<String>((e) => e.stepDescription)
@@ -92,6 +105,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
               ),
             );
           } else {
+            // recipe is not loaded yet, show spinner
             return const Center(
               child: CircularProgressIndicator(),
             );

@@ -1,7 +1,15 @@
+/// A single item object containing shared fields between item types
 class ItemModel {
+  /// ID of the item from third party API
   int itemId;
+
+  /// Name of the item
   String itemName;
+
+  /// Is item checked
   bool checked;
+
+  /// Position of the item
   int position;
 
   ItemModel(
@@ -22,8 +30,12 @@ class ItemModel {
   }
 }
 
+/// A single list item object, in which the item information is supplied using [itemId]
 class ListItemModel extends ItemModel {
+  /// ID number of the list item entry
   int listItemId;
+
+  /// ID number of the shopping list
   int listId;
 
   ListItemModel(
@@ -45,6 +57,7 @@ class ListItemModel extends ItemModel {
   }
 
   factory ListItemModel.fromJson(Map<String, dynamic> json) {
+    // first get the fields from ItemModel
     ItemModel item = ItemModel.fromJson(json);
 
     return ListItemModel(
@@ -58,8 +71,12 @@ class ListItemModel extends ItemModel {
   }
 }
 
+/// A single custom list item object, in which the user supplies the item name
 class CustomListItemModel extends ItemModel {
+  /// ID number of the custom item entry
   int customItemId;
+
+  /// ID number of the list item
   int listId;
 
   CustomListItemModel({
@@ -81,6 +98,7 @@ class CustomListItemModel extends ItemModel {
   }
 
   factory CustomListItemModel.fromJson(Map<String, dynamic> json) {
+    // first get the fields from ItemModel
     ItemModel item = ItemModel.fromJson(json);
 
     return CustomListItemModel(
@@ -93,8 +111,12 @@ class CustomListItemModel extends ItemModel {
   }
 }
 
+/// A single recipe item object, in which the item information is supplied using [itemId]
 class RecipeItemModel extends ItemModel {
+  /// ID number of the recipe item entry
   int recipeItemId;
+
+  /// ID number of the recipe
   int recipeId;
 
   RecipeItemModel({
@@ -113,6 +135,7 @@ class RecipeItemModel extends ItemModel {
   }
 
   factory RecipeItemModel.fromJson(Map<String, dynamic> json) {
+    // first get the fields from ItemModel
     ItemModel item = ItemModel.fromJson(json);
 
     return RecipeItemModel(

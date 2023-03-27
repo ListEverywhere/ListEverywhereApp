@@ -5,6 +5,7 @@ import 'package:listeverywhere_app/services/user_service.dart';
 import 'package:listeverywhere_app/views/bottom_navbar.dart';
 import 'package:listeverywhere_app/widgets/recipe_entry.dart';
 
+/// Displays a list of a user's Recipes
 class MyRecipesView extends StatefulWidget {
   const MyRecipesView({super.key});
 
@@ -15,12 +16,18 @@ class MyRecipesView extends StatefulWidget {
 }
 
 class MyRecipesViewState extends State<MyRecipesView> {
+  /// Instance of [UserService]
   final userService = UserService();
+
+  /// Instance of [RecipesService]
   final recipesService = RecipesService();
 
+  /// Returns a list of the current user's recipes
   Future<List<RecipeModel>> getUserRecipes() async {
+    // get user details
     var user = await userService.getUserFromToken();
 
+    // use recipes service to get recipes
     var recipes = await recipesService.getRecipesByUser(user.id!);
 
     return recipes;
@@ -35,9 +42,12 @@ class MyRecipesViewState extends State<MyRecipesView> {
       body: FutureBuilder(
         future: getUserRecipes(),
         builder: (context, snapshot) {
+          // check if data is available
           if (snapshot.hasData) {
+            // data is available
             List<RecipeModel> data = snapshot.data!;
             if (data.isNotEmpty) {
+              // user has recipes, create list of recipe entries
               return ListView.builder(
                 itemCount: data.length,
                 itemBuilder: (context, index) {
@@ -45,12 +55,14 @@ class MyRecipesViewState extends State<MyRecipesView> {
                 },
               );
             } else {
+              // user has no recipes
               return const Center(
                 child: Text('You do not have any recipes.'),
               );
             }
           }
 
+          // if no data, show loading indicator
           return const Center(
             child: CircularProgressIndicator(),
           );

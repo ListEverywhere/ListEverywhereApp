@@ -1,13 +1,29 @@
 import 'package:listeverywhere_app/models/item_model.dart';
 
+// A single Recipe object. [recipeItems] and [recipeSteps] may be optional.
 class RecipeModel {
+  /// ID number of the recipe
   int recipeId;
+
+  /// ID number of the category
   int category;
+
+  /// Recipe name
   String recipeName;
+
+  /// Description of the recipe
   String recipeDescription;
+
+  /// Recipe items
   List<RecipeItemModel>? recipeItems;
+
+  /// Recipe steps
   List<RecipeStepModel>? recipeSteps;
+
+  /// Is the recipe published
   bool published;
+
+  /// Id number of the user
   int userId;
 
   RecipeModel({
@@ -28,14 +44,18 @@ class RecipeModel {
         recipeDescription = json['recipeDescription'],
         published = json['published'],
         userId = json['userId'],
+        // check if recipeItems is null
         recipeItems = json['recipeItems'] != null
+            // cast recipeItems as list and map to list of RecipeItemModel
             ? (json['recipeItems'] as List<dynamic>)
                 .map(
                   (e) => RecipeItemModel.fromJson(e),
                 )
                 .toList()
             : null,
+        // check if recipeSteps is null
         recipeSteps = json['recipeSteps'] != null
+            // cast recipeSteps as list and map to list of RecipeStepModel
             ? (json['recipeSteps'] as List<dynamic>)
                 .map((e) => RecipeStepModel.fromJson(e))
                 .toList()
@@ -52,9 +72,15 @@ class RecipeModel {
   }
 }
 
+/// A single recipe step
 class RecipeStepModel {
+  /// ID number of the recipe step entry
   int recipeStepId;
+
+  /// Step details
   String stepDescription;
+
+  /// ID number of the recipe
   int recipeId;
 
   RecipeStepModel(

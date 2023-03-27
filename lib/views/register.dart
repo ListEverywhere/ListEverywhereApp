@@ -3,9 +3,11 @@ import 'package:listeverywhere_app/models/user_model.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
 
+/// The registration page of the application
 class RegisterView extends StatefulWidget {
   RegisterView({super.key});
 
+  /// Instance of [UserService]
   final UserService userService = UserService();
 
   @override
@@ -19,11 +21,22 @@ class RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
+    /// Stores first name text
     TextEditingController firstName = TextEditingController();
+
+    /// Stores last name text
     TextEditingController lastName = TextEditingController();
+
+    /// Stores email text
     TextEditingController email = TextEditingController();
+
+    /// Stores date of birth
     TextEditingController dateOfBirth = TextEditingController();
+
+    /// Stores username text
     TextEditingController username = TextEditingController();
+
+    /// Stores password text
     TextEditingController password = TextEditingController();
 
     return Scaffold(
@@ -54,8 +67,11 @@ class RegisterViewState extends State<RegisterView> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
+                        // check if form fields are valid
                         if (_formKey.currentState!.validate()) {
+                          // save form fields
                           _formKey.currentState?.save();
+                          // create user object
                           UserModel user = UserModel(
                               firstName: firstName.text,
                               lastName: lastName.text,
@@ -67,11 +83,16 @@ class RegisterViewState extends State<RegisterView> {
                             const SnackBar(content: Text('Processing...')),
                           );
                           try {
+                            // use users service to send register form data
                             var response =
                                 await widget.userService.sendRegisterData(user);
                             print("success");
 
+                            // only show dialog if the widget is rendered
                             if (!context.mounted) return;
+
+                            // display register success dialog
+                            // and provide link to login
                             showDialog(
                                 context: context,
                                 builder: (ctxt) => AlertDialog(
@@ -94,6 +115,7 @@ class RegisterViewState extends State<RegisterView> {
                                         content: const Text(
                                             'Successfully registered account!')));
                           } on Exception catch (e) {
+                            // failed to register
                             print(e);
                             showDialog(
                                 context: context,

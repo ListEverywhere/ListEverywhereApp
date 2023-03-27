@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+/// A navigation bar for logged-in users to access lists and recipes
+/// Temporarily a stateless widget until navigator is rewritten.
 class BottomNavBar extends StatelessWidget {
+  // Selected navigation item
   int currentIndex;
+  // Pages to navigate to
   final pages = [
     '/lists',
     '/recipes/user',
     '/recipes/explore',
   ];
+  // context of parent view
   BuildContext parentContext;
 
   BottomNavBar({
@@ -20,6 +25,7 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: currentIndex,
+      // list of navigation bar items
       items: const [
         BottomNavigationBarItem(
           icon: Icon(FontAwesomeIcons.basketShopping),
@@ -35,6 +41,7 @@ class BottomNavBar extends StatelessWidget {
         ),
       ],
       onTap: (value) {
+        // navigate to the route based on index
         Navigator.popAndPushNamed(parentContext, pages[value]);
       },
     );

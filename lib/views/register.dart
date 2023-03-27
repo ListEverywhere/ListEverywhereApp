@@ -125,13 +125,15 @@ class RegisterViewState extends State<RegisterView> {
                                                 .pushNamedAndRemoveUntil(
                                                     context,
                                                     '/login',
-                                                    ModalRoute.withName('/')),
+                                                    ModalRoute.withName(
+                                                        '/welcome')),
                                             child: const Text('Go to Login'),
                                           ),
                                           TextButton(
                                             onPressed: () => Navigator.popUntil(
                                                 context,
-                                                ModalRoute.withName('/')),
+                                                ModalRoute.withName(
+                                                    '/welcome')),
                                             child: const Text('Close'),
                                           ),
                                         ],

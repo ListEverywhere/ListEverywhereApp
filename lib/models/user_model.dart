@@ -1,12 +1,26 @@
 import 'package:flutter/foundation.dart';
 
-class UserModel extends ChangeNotifier {
+/// A single User object.
+class UserModel {
+  /// ID number of the user
   int? id;
+
+  /// First name
   String? firstName;
+
+  /// Last name
   String? lastName;
+
+  /// Email address
   String? email;
+
+  /// Date of birth
   DateTime? dateOfBirth;
+
+  /// Username
   String? username;
+
+  /// Password
   String? password;
 
   UserModel(
@@ -22,6 +36,7 @@ class UserModel extends ChangeNotifier {
         firstName = json['firstName'],
         lastName = json['lastName'],
         email = json['email'],
+        // only try to parse date of birth if it is not null
         dateOfBirth = json['dateOfBirth'] != null
             ? DateTime.parse(json['dateOfBirth'])
             : null,
@@ -34,6 +49,7 @@ class UserModel extends ChangeNotifier {
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
+      // convert date of birth to a string first
       'dateOfBirth': dateOfBirth!.toIso8601String(),
       'username': username,
       'password': password

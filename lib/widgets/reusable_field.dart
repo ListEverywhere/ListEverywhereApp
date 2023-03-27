@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// A text field for a form control
 class ReusableFormField extends StatelessWidget {
   const ReusableFormField(
       {super.key,
@@ -10,10 +11,19 @@ class ReusableFormField extends StatelessWidget {
       this.minLength = 1,
       this.maxLength = 64});
 
+  /// Stores the form field text
   final TextEditingController controller;
+
+  /// Text displayed when field is empty
   final String hint;
+
+  /// Hides field characters
   final bool isPassword;
+
+  /// Minimum field length
   final int minLength;
+
+  /// Maximum field length
   final int maxLength;
 
   @override
@@ -27,6 +37,7 @@ class ReusableFormField extends StatelessWidget {
       decoration: InputDecoration(hintText: hint),
       controller: controller,
       validator: (value) {
+        // check constraints for length and if empty
         if (value == null || value.isEmpty) {
           return "$hint cannot be blank.";
         } else if (value.length < minLength || value.length > maxLength) {
@@ -38,11 +49,15 @@ class ReusableFormField extends StatelessWidget {
   }
 }
 
+/// A single form field containing a date picker
 class ReusableFormDateField extends StatelessWidget {
   const ReusableFormDateField(
       {super.key, required this.controller, required this.hint});
 
+  /// Stores the date text
   final TextEditingController controller;
+
+  /// Text displayed when field is blank
   final String hint;
 
   @override
@@ -50,6 +65,7 @@ class ReusableFormDateField extends StatelessWidget {
     return TextFormField(
       readOnly: true,
       onTap: () async {
+        // display date picker when clicked
         DateTime? date = await showDatePicker(
             context: context,
             initialDate: controller.text.isEmpty
@@ -67,6 +83,7 @@ class ReusableFormDateField extends StatelessWidget {
       decoration: InputDecoration(hintText: hint),
       controller: controller,
       validator: (value) {
+        // validate constraints
         if (value == null || value.isEmpty) {
           return '$hint cannot be blank.';
         }

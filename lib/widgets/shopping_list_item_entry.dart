@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 
+/// A single shopping list item entry using information from [item]
 class ShoppingListItemEntry extends StatefulWidget {
   ShoppingListItemEntry({
     super.key,
@@ -10,9 +11,16 @@ class ShoppingListItemEntry extends StatefulWidget {
     required this.updateCallback,
   });
 
+  /// Item object
   ItemModel item;
+
+  /// Callback function for when item is checked
   final Function(bool?, ItemModel) checkedCallback;
+
+  /// Callback function for when item is deleted
   final Function(ItemModel) deleteCallback;
+
+  /// Callback function for when item is updated
   final Function(ItemModel) updateCallback;
 
   @override
@@ -22,27 +30,34 @@ class ShoppingListItemEntry extends StatefulWidget {
 }
 
 class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
+  /// Item object
   late ItemModel item;
+
+  /// Is item checked
   bool checked = false;
   bool edit = false;
 
   @override
   void initState() {
     super.initState();
+    // set item and checked property
     item = widget.item;
     checked = item.checked;
   }
 
+  /// Runs checked callback and updates state
   void checkedCallback(bool? value, ItemModel item) {
     widget.checkedCallback(value, item);
     setState(() {});
   }
 
+  /// Runs delete callback and updates state
   void deleteCallback(ItemModel item) {
     widget.deleteCallback(item);
     setState(() {});
   }
 
+  /// Runs update callback and updates state
   void updateCallback(ItemModel item) {
     widget.updateCallback(item);
     setState(() {});
@@ -60,6 +75,7 @@ class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
   }
 }
 
+/// A single shopping list item card
 class ItemCard extends StatelessWidget {
   const ItemCard({
     super.key,
@@ -70,9 +86,16 @@ class ItemCard extends StatelessWidget {
     this.edit = false,
   });
 
+  /// Item object
   final ItemModel item;
+
+  /// Callback for checked
   final Function(bool?, ItemModel) checkedCallback;
+
+  /// Callback for delete
   final Function(ItemModel) deleteCallback;
+
+  /// Callback for update
   final Function(ItemModel) updateCallback;
   final bool edit;
 
@@ -92,8 +115,8 @@ class ItemCard extends StatelessWidget {
                 Checkbox(
                     value: checked,
                     onChanged: (value) {
+                      // user checked/unchecked item
                       item.checked = value!;
-                      print('Item ${item.itemId} checked: $value');
                       checkedCallback(value, item);
                     }),
                 Padding(
@@ -107,18 +130,19 @@ class ItemCard extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    print('Updating item ${item.itemName}');
+                    // updating item
                     updateCallback(item);
                   },
                   icon: const Icon(Icons.edit),
                 ),
                 IconButton(
                   onPressed: () {
-                    print('Deleting item ${item.itemName}');
+                    // deleting item
                     deleteCallback(item);
                   },
                   icon: const Icon(Icons.delete_forever),
                 ),
+                // create drag handles
                 ReorderableDragStartListener(
                   index: item.position,
                   child: const Icon(Icons.drag_handle),

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 
+/// A single shopping list card with information from [list]
 class ShoppingListEntry extends StatelessWidget {
+  /// List object
   final ListModel list;
+
+  /// Callback function for updating
   final Function(ListModel) updateCallback;
+
+  /// Callback function for deleting
   final Function(int) deleteCallback;
 
   const ShoppingListEntry(
@@ -19,7 +25,7 @@ class ShoppingListEntry extends StatelessWidget {
       child: InkWell(
         splashColor: Colors.amber,
         onTap: () {
-          print('Tapped list id ${list.listId}');
+          // display single list page
           Navigator.pushNamed(context, '/lists/list', arguments: list.listId);
         },
         child: SizedBox(
@@ -36,14 +42,14 @@ class ShoppingListEntry extends StatelessWidget {
                 children: [
                   IconButton(
                     onPressed: () {
-                      print('Updating list ${list.listName}');
+                      // update shopping list
                       updateCallback(list);
                     },
                     icon: const Icon(Icons.edit),
                   ),
                   IconButton(
                     onPressed: () {
-                      print('Deleting list ${list.listName}');
+                      // delete shopping list
                       deleteCallback(list.listId);
                     },
                     icon: const Icon(Icons.delete_forever),

@@ -1,4 +1,5 @@
 import 'package:listeverywhere_app/constants.dart';
+import 'package:listeverywhere_app/models/category_model.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
 import 'dart:convert';
@@ -44,7 +45,7 @@ class RecipesService {
 
     // send HTTP get to get recipe list
     var response = await http.get(
-      Uri.parse('$_url/user/$userId'),
+      Uri.parse('$_url/user/$userId?noItems=true'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -64,6 +65,56 @@ class RecipesService {
     }
 
     // error has occurred, return message from response
+    return Future.error(initialData['message'][0]);
+  }
+
+  /// Returns a list of recipes with a matching [category] id
+  Future<List<RecipeModel>> getRecipesByCategory(int category) async {
+    // get user token
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.get(
+      Uri.parse('$_url/categories/$category?noItems=true'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      var recipes = (initialData as List<dynamic>).map((e) {
+        return RecipeModel.fromJson(e);
+      }).toList();
+      return recipes;
+    } else if (response.statusCode == 404) {
+      return [];
+    }
+
+    return Future.error(initialData['message'][0]);
+  }
+
+  Future<List<CategoryModel>> getCategories() async {
+    // get user token
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.get(
+      Uri.parse('$_url/categories/'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      var categories = (initialData as List<dynamic>).map((e) {
+        return CategoryModel.fromJson(e);
+      }).toList();
+
+      return categories;
+    }
+
     return Future.error(initialData['message'][0]);
   }
 }

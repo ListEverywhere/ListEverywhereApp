@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/models/category_model.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/models/user_model.dart';
 import 'package:listeverywhere_app/views/bottom_navbar.dart';
+import 'package:listeverywhere_app/views/category_recipes.dart';
 import 'package:listeverywhere_app/views/home.dart';
 import 'package:listeverywhere_app/views/login.dart';
 import 'package:listeverywhere_app/views/my_lists.dart';
 import 'package:listeverywhere_app/views/my_recipes.dart';
+import 'package:listeverywhere_app/views/recipe_categories.dart';
 import 'package:listeverywhere_app/views/register.dart';
 import 'package:listeverywhere_app/views/single_list.dart';
 import 'package:listeverywhere_app/views/single_recipe.dart';
@@ -45,12 +48,17 @@ class MyApp extends StatelessWidget {
           '/welcome': (context) => HomeView(),
           '/register': (context) => RegisterView(),
           '/login': (context) => LoginView(),
-          '/lists': (context) => MyListsView(),
+          '/lists': (context) => const MyListsView(),
           '/lists/list': (context) => SingleListView(
               listId: ModalRoute.of(context)?.settings.arguments as int),
-          '/recipes/user': (context) => MyRecipesView(),
+          '/recipes/user': (context) => const MyRecipesView(),
           '/recipes/recipe': (context) => SingleRecipeView(
                 recipeId: ModalRoute.of(context)?.settings.arguments as int,
+              ),
+          '/recipes/categories': (context) => const RecipeCategoriesView(),
+          '/recipes/categories/category': (context) => CategoryRecipesView(
+                category:
+                    ModalRoute.of(context)?.settings.arguments as CategoryModel,
               ),
         });
   }

@@ -1,47 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/models/category_model.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/services/recipes_service.dart';
-import 'package:listeverywhere_app/services/user_service.dart';
-import 'package:listeverywhere_app/views/bottom_navbar.dart';
-import 'package:listeverywhere_app/widgets/recipe_entry.dart';
 import 'package:listeverywhere_app/widgets/recipes_list_view.dart';
 
-/// Displays a list of a user's Recipes
-class MyRecipesView extends StatefulWidget {
-  const MyRecipesView({super.key});
+class CategoryRecipesView extends StatefulWidget {
+  const CategoryRecipesView({
+    super.key,
+    required this.category,
+  });
+
+  final CategoryModel category;
 
   @override
   State<StatefulWidget> createState() {
-    return MyRecipesViewState();
+    return CategoryRecipesViewState();
   }
 }
 
-class MyRecipesViewState extends State<MyRecipesView> {
-  /// Instance of [UserService]
-  final userService = UserService();
-
-  /// Instance of [RecipesService]
+class CategoryRecipesViewState extends State<CategoryRecipesView> {
   final recipesService = RecipesService();
 
-  /// Returns a list of the current user's recipes
-  Future<List<RecipeModel>> getUserRecipes() async {
-    // get user details
-    var user = await userService.getUserFromToken();
-
-    // use recipes service to get recipes
-    var recipes = await recipesService.getRecipesByUser(user.id!);
-
+  Future<List<RecipeModel>> getRecipes() async {
+    var recipes =
+        await recipesService.getRecipesByCategory(widget.category.categoryId);
     return recipes;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Recipes'),
-      ),
+      appBar: AppBar(title: Text(widget.category.categoryName)),
       body: FutureBuilder(
-        future: getUserRecipes(),
+        future: getRecipes(),
         builder: (context, snapshot) {
           // check if data is available
           if (snapshot.hasData) {
@@ -53,7 +44,7 @@ class MyRecipesViewState extends State<MyRecipesView> {
             } else {
               // user has no recipes
               return const Center(
-                child: Text('You do not have any recipes.'),
+                child: Text('No recipes found.'),
               );
             }
           }
@@ -63,10 +54,6 @@ class MyRecipesViewState extends State<MyRecipesView> {
             child: CircularProgressIndicator(),
           );
         },
-      ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: 1,
-        parentContext: context,
       ),
     );
   }

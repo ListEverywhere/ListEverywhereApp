@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:listeverywhere_app/views/bottom_navbar.dart';
+import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
 import 'package:listeverywhere_app/widgets/explore_card.dart';
 
 class ExploreRecipes extends StatelessWidget {

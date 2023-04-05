@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
-import 'package:listeverywhere_app/views/bottom_navbar.dart';
+import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
 import 'package:listeverywhere_app/widgets/shopping_list_entry.dart';

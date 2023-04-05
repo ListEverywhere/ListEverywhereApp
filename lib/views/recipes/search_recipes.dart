@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/search_model.dart';
-import 'package:listeverywhere_app/views/bottom_navbar.dart';
+import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
 
 class SearchRecipesView extends StatefulWidget {

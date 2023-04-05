@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/category_model.dart';
 import 'package:listeverywhere_app/services/recipes_service.dart';
-import 'package:listeverywhere_app/views/bottom_navbar.dart';
+import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
 import 'package:listeverywhere_app/widgets/category_card.dart';
 
 class RecipeCategoriesView extends StatefulWidget {

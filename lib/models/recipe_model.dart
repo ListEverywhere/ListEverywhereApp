@@ -26,6 +26,9 @@ class RecipeModel {
   /// Id number of the user
   int userId;
 
+  // Total cooking time for the recipe
+  int cookTime;
+
   RecipeModel({
     required this.recipeId,
     required this.category,
@@ -35,6 +38,7 @@ class RecipeModel {
     this.recipeSteps,
     required this.published,
     required this.userId,
+    required this.cookTime,
   });
 
   RecipeModel.fromJson(Map<String, dynamic> json)
@@ -44,6 +48,7 @@ class RecipeModel {
         recipeDescription = json['recipeDescription'],
         published = json['published'],
         userId = json['userId'],
+        cookTime = json['cookTime'],
         // check if recipeItems is null
         recipeItems = json['recipeItems'] != null
             // cast recipeItems as list and map to list of RecipeItemModel
@@ -68,6 +73,7 @@ class RecipeModel {
       'recipeName': recipeName,
       'recipeDescription': recipeDescription,
       'userId': userId,
+      'cookTime': cookTime,
     };
   }
 }

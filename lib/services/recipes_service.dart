@@ -1,6 +1,7 @@
 import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/category_model.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
+import 'package:listeverywhere_app/models/search_model.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
 import 'dart:convert';
 
@@ -113,6 +114,37 @@ class RecipesService {
       }).toList();
 
       return categories;
+    }
+
+    return Future.error(initialData['message'][0]);
+  }
+
+  Future<List<RecipeModel>> searchRecipes(SearchModel search) async {
+    // create search data
+    var searchData = jsonEncode(search);
+
+    // get user token
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.post(
+      Uri.parse('$_url/search/'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: searchData,
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      // recipes was found, map JSON data to list of RecipeModel objects
+      var recipes = (initialData as List<dynamic>).map((e) {
+        return RecipeModel.fromJson(e);
+      }).toList();
+      return recipes;
+    } else if (response.statusCode == 404) {
+      return [];
     }
 
     return Future.error(initialData['message'][0]);

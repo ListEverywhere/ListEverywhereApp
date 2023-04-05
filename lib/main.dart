@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/category_model.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
+import 'package:listeverywhere_app/models/search_model.dart';
 import 'package:listeverywhere_app/models/user_model.dart';
 import 'package:listeverywhere_app/views/bottom_navbar.dart';
 import 'package:listeverywhere_app/views/category_recipes.dart';
@@ -12,6 +13,8 @@ import 'package:listeverywhere_app/views/my_lists.dart';
 import 'package:listeverywhere_app/views/my_recipes.dart';
 import 'package:listeverywhere_app/views/recipe_categories.dart';
 import 'package:listeverywhere_app/views/register.dart';
+import 'package:listeverywhere_app/views/search_recipes.dart';
+import 'package:listeverywhere_app/views/search_recipes_results.dart';
 import 'package:listeverywhere_app/views/single_list.dart';
 import 'package:listeverywhere_app/views/single_recipe.dart';
 import 'package:provider/provider.dart';
@@ -61,6 +64,11 @@ class MyApp extends StatelessWidget {
           '/recipes/categories/category': (context) => CategoryRecipesView(
                 category:
                     ModalRoute.of(context)?.settings.arguments as CategoryModel,
+              ),
+          '/recipes/search': (context) => const SearchRecipesView(),
+          '/recipes/search/results': (context) => SearchRecipesResultsView(
+                search:
+                    ModalRoute.of(context)?.settings.arguments as SearchModel,
               ),
         });
   }

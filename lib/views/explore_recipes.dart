@@ -43,7 +43,9 @@ class ExploreRecipes extends StatelessWidget {
                   ),
                   ExploreCard(
                     cardText: 'Search Recipes',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, '/recipes/search');
+                    },
                     color: Colors.green,
                     fontColor: Colors.white,
                     cardIcon: FontAwesomeIcons.magnifyingGlass,

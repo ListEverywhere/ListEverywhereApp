@@ -71,14 +71,40 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      recipe.recipeName,
-                      style: const TextStyle(
-                          fontSize: 48, fontWeight: FontWeight.w700),
-                    ),
-                    const SizedBox(height: 20),
-                    Flexible(
-                      child: Text(recipe.recipeDescription),
+                    Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            recipe.recipeName,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                fontSize: 48, fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: 20),
+                          Flexible(
+                            child: Text(
+                              recipe.recipeDescription,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text.rich(
+                            TextSpan(
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                ),
+                                children: [
+                                  const TextSpan(
+                                      text: 'Cook Time: ',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  TextSpan(text: '${recipe.cookTime} minutes'),
+                                ]),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 20),
                     const Text('Ingredients:',

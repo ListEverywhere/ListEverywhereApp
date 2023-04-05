@@ -38,7 +38,7 @@ class RecipeCategoriesViewState extends State<RecipeCategoriesView> {
               itemCount: categories.length,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: CategoryCard(
                     category: categories[index],
                     onTap: (p0) {

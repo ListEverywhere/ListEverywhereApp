@@ -10,7 +10,7 @@ class BottomNavBar extends StatelessWidget {
   final pages = [
     '/lists',
     '/recipes/user',
-    '/recipes/categories',
+    '/recipes',
   ];
   // context of parent view
   BuildContext parentContext;

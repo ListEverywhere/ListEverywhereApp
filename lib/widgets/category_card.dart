@@ -15,24 +15,23 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      child: InkWell(
-        onTap: () {
-          onTap(category.categoryId);
-        },
-        child: Container(
-            height: 80.0,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(5),
+    return SizedBox(
+      height: 80.0,
+      child: Material(
+        clipBehavior: Clip.hardEdge,
+        color: color,
+        borderRadius: BorderRadius.circular(15),
+        child: InkWell(
+          onTap: () {
+            onTap(category.categoryId);
+          },
+          child: Center(
+            child: Text(
+              category.categoryName,
+              style: const TextStyle(color: Colors.white, fontSize: 24),
             ),
-            child: Center(
-              child: Text(
-                category.categoryName,
-                style: const TextStyle(color: Colors.white, fontSize: 24),
-              ),
-            )),
+          ),
+        ),
       ),
     );
   }

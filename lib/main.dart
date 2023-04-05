@@ -5,6 +5,7 @@ import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/models/user_model.dart';
 import 'package:listeverywhere_app/views/bottom_navbar.dart';
 import 'package:listeverywhere_app/views/category_recipes.dart';
+import 'package:listeverywhere_app/views/explore_recipes.dart';
 import 'package:listeverywhere_app/views/home.dart';
 import 'package:listeverywhere_app/views/login.dart';
 import 'package:listeverywhere_app/views/my_lists.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
           '/recipes/recipe': (context) => SingleRecipeView(
                 recipeId: ModalRoute.of(context)?.settings.arguments as int,
               ),
+          '/recipes': (context) => const ExploreRecipes(),
           '/recipes/categories': (context) => const RecipeCategoriesView(),
           '/recipes/categories/category': (context) => CategoryRecipesView(
                 category:

@@ -3,6 +3,7 @@ import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
+import 'package:listeverywhere_app/widgets/item_dialog.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
 import 'package:listeverywhere_app/widgets/shopping_list_item_entry.dart';
@@ -60,6 +61,26 @@ class SingleListViewState extends State<SingleListView> {
   Future<void> addItem(ItemModel? item) async {
     var user = await userService.getUserFromToken();
     if (item != null) {
+      // find type of item
+      if (item.itemId < 0) {
+        // custom list item
+        item = CustomListItemModel(
+            itemName: item.itemName,
+            checked: false,
+            position: -1,
+            listId: widget.listId,
+            customItemId: -1);
+      } else {
+        // list item
+        item = ListItemModel(
+          checked: false,
+          itemId: item.itemId,
+          listItemId: -1,
+          listId: widget.listId,
+          position: -1,
+        );
+      }
+
       // if item is not null, add item using lists service
       var response = await listsService.addItem(item).then((value) {
         print(value);
@@ -88,194 +109,51 @@ class SingleListViewState extends State<SingleListView> {
   /// Displays a dialog for adding/updating a list item
   Future<void> updateItem(BuildContext context, ItemModel? item,
       String alertText, String submitText, Function(ItemModel?) onSubmit) {
-    // stores item name
-    TextEditingController itemName = TextEditingController();
     ItemModel? originalItem = item;
-    ItemModel? newItem;
-    List<ItemModel> items = [];
     bool isCustom = false;
-    bool disableCheckbox = false;
     bool hideCheckbox = false;
-
-    // if item is not null, item is being updated
-    if (item != null) {
-      if (item is CustomListItemModel) {
-        // prevent changing item type
-        disableCheckbox = true;
-        // hide item search
-        isCustom = true;
-      } else if (item is ListItemModel) {
-        // prevent changing item type
-        hideCheckbox = true;
-      }
-    }
-    // set the item text field if updating item
-    if (originalItem != null) itemName.text = originalItem.itemName;
 
     // display the dialog
     return showDialog(
       context: context,
       builder: (context) {
-        // create new scaffold so that snackbar show up above dialog
-        return ScaffoldMessenger(
-          child: StatefulBuilder(builder: ((innerContext, setState) {
-            return Scaffold(
-              backgroundColor: Colors.transparent,
-              body: AlertDialog(
-                title: Text(alertText),
-                content: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Enter your item name, then press the search icon',
-                      style: TextStyle(fontSize: 12.0),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: ReusableFormField(
-                              controller: itemName, hint: 'Item Name'),
-                        ),
-                        // if custom item is selected, hide item search
-                        if (!isCustom)
-                          Expanded(
-                            child: IconButton(
-                                onPressed: () async {
-                                  // search icon pressed, search items
-                                  await listsService
-                                      .searchItemsByName(itemName.text)
-                                      .then((value) {
-                                    if (value.isEmpty) {
-                                    } else {
-                                      // update items value and set current item to first
-                                      setState(() {
-                                        items = value;
-                                        newItem = items.first;
-                                      });
-                                    }
-                                  }).onError((error, stackTrace) {
-                                    // display error that items failed to load
-                                    ScaffoldMessenger.of(innerContext)
-                                        .showSnackBar(SnackBar(
-                                      content:
-                                          const Text('Failed to get items.'),
-                                      backgroundColor: Colors.red[400],
-                                    ));
-                                  });
-                                },
-                                icon: const Icon(Icons.search)),
-                          ),
-                      ],
-                    ),
-                    // if custom item is chosen, do not show
-                    if (!isCustom)
-                      DropdownButton<ItemModel>(
-                        value: newItem,
-                        // map items to a list of DropdownMenuItems
-                        items: items
-                            .map<DropdownMenuItem<ItemModel>>(
-                                (e) => DropdownMenuItem<ItemModel>(
-                                      value: e,
-                                      child: Text(e.itemName),
-                                    ))
-                            .toList(),
-                        onChanged: (value) {
-                          // update current item to changed item
-                          setState(() {
-                            newItem = value;
-                          });
-                        },
-                      ),
-                    // hide checkbox when updating items
-                    if (!hideCheckbox)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Checkbox(
-                            value: isCustom,
-                            onChanged: (value) {
-                              setState(() {
-                                isCustom = disableCheckbox ? true : value!;
-                              });
-                            },
-                          ),
-                          const Text('I can\'t find my item'),
-                        ],
-                      ),
-                    Text(
-                      // display text only if custom item is selected
-                      isCustom
-                          ? 'This item will be added as a custom item.\nIt cannot be used for recipe matching.'
-                          : '',
-                      style: const TextStyle(fontSize: 12.0),
-                    ),
-                  ],
-                ),
-                actions: [
-                  SizedBox(
-                    width: 100,
-                    height: 50,
-                    child: ReusableButton(
-                      padding: const EdgeInsets.all(4.0),
-                      text: 'Cancel',
-                      onTap: () {
-                        // exit dialog, no changes
-                        Navigator.pop(innerContext);
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: 100,
-                    height: 50,
-                    child: ReusableButton(
-                      padding: const EdgeInsets.all(4.0),
-                      text: submitText,
-                      onTap: () {
-                        // if originalItem is not null, item is being updated
-                        if (originalItem != null) {
-                          // itemId is set if the item is not a custom item, otherwise set to -1
-                          originalItem.itemId =
-                              originalItem.itemId >= 0 ? newItem!.itemId : -1;
-                          // set item name for custom items
-                          originalItem.itemName = itemName.text;
-                          // run callback
-                          onSubmit(originalItem);
-                        } else {
-                          if (isCustom) {
-                            // create new custom list item
-                            newItem = CustomListItemModel(
-                                itemName: itemName.text,
-                                checked: false,
-                                position: -1,
-                                listId: widget.listId,
-                                customItemId: -1);
-                          } else {
-                            // create new list item model
-                            int itemId = newItem!.itemId;
-                            newItem = ListItemModel(
-                              checked: false,
-                              itemId: itemId,
-                              listItemId: -1,
-                              listId: widget.listId,
-                              position: -1,
-                            );
-                          }
-                          // run callback
-                          onSubmit(newItem);
-                        }
-                      },
-                    ),
-                  )
-                ],
-              ),
+        // if item is not null, item is being updated
+        if (item != null) {
+          if (item is CustomListItemModel) {
+            return CustomListItemDialog(
+              onSubmit: onSubmit,
+              alertText: alertText,
+              submitText: submitText,
+              parentContext: context,
+              listId: widget.listId,
+              originalItem: item,
             );
-          })),
-        );
+          } else if (item is ListItemModel) {
+            return ListItemDialog(
+              onSubmit: onSubmit,
+              alertText: alertText,
+              submitText: submitText,
+              parentContext: context,
+              listId: widget.listId,
+              originalItem: item,
+              listsService: listsService,
+            );
+          }
+
+          throw Exception('Invalid item.');
+        } else {
+          // adding item, show generic item dialog
+          return ItemDialog(
+            alertText: alertText,
+            submitText: submitText,
+            parentContext: context,
+            listsService: listsService,
+            onSubmit: onSubmit,
+            originalItem: originalItem,
+            isCustom: isCustom,
+            hideCheckbox: hideCheckbox,
+          );
+        }
       },
     );
   }

@@ -87,6 +87,7 @@ class RegisterViewState extends State<RegisterView> {
                       isPassword: true,
                       minLength: 8,
                       maxLength: 32,
+                      keyboardType: TextInputType.visiblePassword,
                     ),
                     ElevatedButton(
                       onPressed: () async {

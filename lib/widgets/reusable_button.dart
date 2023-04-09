@@ -8,7 +8,8 @@ class ReusableButton extends StatelessWidget {
       this.color = Colors.amber,
       this.padding = const EdgeInsets.all(0),
       this.border = const BorderRadius.all(Radius.circular(15.0)),
-      this.text = ""});
+      this.text = "",
+      this.textColor = Colors.black});
 
   /// Function to run after button click
   final Function()? onTap;
@@ -25,6 +26,8 @@ class ReusableButton extends StatelessWidget {
   /// Button text
   final String text;
 
+  final Color? textColor;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -35,7 +38,7 @@ class ReusableButton extends StatelessWidget {
         //margin: const EdgeInsets.all(15.0),
         child: InkWell(
           onTap: onTap,
-          child: Center(child: Text(text)),
+          child: Center(child: Text(text, style: TextStyle(color: textColor))),
         ),
       ),
     );

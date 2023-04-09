@@ -40,6 +40,13 @@ class MyRecipesViewState extends State<MyRecipesView> {
       appBar: AppBar(
         title: const Text('My Recipes'),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // create new recipe
+          Navigator.pushNamed(context, '/recipes/create');
+        },
+        child: const Icon(Icons.add),
+      ),
       body: FutureBuilder(
         future: getUserRecipes(),
         builder: (context, snapshot) {

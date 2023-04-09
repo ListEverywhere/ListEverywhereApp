@@ -83,7 +83,8 @@ class ItemCard extends StatelessWidget {
     required this.checkedCallback,
     required this.deleteCallback,
     required this.updateCallback,
-    this.edit = false,
+    this.edit = true,
+    this.enableDragHandles = true,
   });
 
   /// Item object
@@ -98,6 +99,8 @@ class ItemCard extends StatelessWidget {
   /// Callback for update
   final Function(ItemModel) updateCallback;
   final bool edit;
+
+  final bool enableDragHandles;
 
   @override
   Widget build(BuildContext context) {
@@ -125,30 +128,32 @@ class ItemCard extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    // updating item
-                    updateCallback(item);
-                  },
-                  icon: const Icon(Icons.edit),
-                ),
-                IconButton(
-                  onPressed: () {
-                    // deleting item
-                    deleteCallback(item);
-                  },
-                  icon: const Icon(Icons.delete_forever),
-                ),
-                // create drag handles
-                ReorderableDragStartListener(
-                  index: item.position,
-                  child: const Icon(Icons.drag_handle),
-                ),
-              ],
-            ),
+            if (edit)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      // updating item
+                      updateCallback(item);
+                    },
+                    icon: const Icon(Icons.edit),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      // deleting item
+                      deleteCallback(item);
+                    },
+                    icon: const Icon(Icons.delete_forever),
+                  ),
+                  // create drag handles
+                  if (enableDragHandles)
+                    ReorderableDragStartListener(
+                      index: item.position,
+                      child: const Icon(Icons.drag_handle),
+                    ),
+                ],
+              ),
           ],
         ),
       ),

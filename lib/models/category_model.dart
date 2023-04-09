@@ -7,4 +7,8 @@ class CategoryModel {
   CategoryModel.fromJson(Map<String, dynamic> json)
       : categoryId = json['categoryId'],
         categoryName = json['categoryName'];
+
+  @override
+  bool operator ==(Object other) =>
+      other is CategoryModel && other.categoryId == categoryId;
 }

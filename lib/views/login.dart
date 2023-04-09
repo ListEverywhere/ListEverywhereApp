@@ -45,6 +45,7 @@ class _LoginViewState extends State<LoginView> {
                   maxLength: 20,
                 ),
                 ReusableFormField(
+                  keyboardType: TextInputType.visiblePassword,
                   controller: password,
                   hint: 'Password',
                   isPassword: true,

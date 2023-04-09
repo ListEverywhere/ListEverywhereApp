@@ -322,3 +322,55 @@ class ListItemDialog extends StatelessWidget {
     );
   }
 }
+
+class RecipeItemDialog extends StatelessWidget {
+  const RecipeItemDialog({
+    super.key,
+    required this.onSubmit,
+    required this.alertText,
+    required this.submitText,
+    required this.parentContext,
+    this.originalItem,
+    required this.recipeId,
+    required this.listsService,
+  });
+
+  final Function(RecipeItemModel) onSubmit;
+  final String alertText;
+  final String submitText;
+  final BuildContext parentContext;
+  final RecipeItemModel? originalItem;
+  final int recipeId;
+  final ListsService listsService;
+
+  @override
+  Widget build(BuildContext context) {
+    return ItemDialog(
+      listsService: listsService,
+      alertText: alertText,
+      submitText: submitText,
+      parentContext: parentContext,
+      onSubmit: (item) {
+        RecipeItemModel recipeItem;
+        if (originalItem != null) {
+          recipeItem = RecipeItemModel(
+            itemId: item.itemId,
+            recipeItemId: originalItem!.recipeItemId,
+            recipeId: recipeId,
+          );
+        } else {
+          recipeItem = RecipeItemModel(
+            itemId: item.itemId,
+            recipeItemId: -1,
+            recipeId: recipeId,
+          );
+        }
+
+        onSubmit(recipeItem);
+      },
+      originalItem: originalItem,
+      isCustom: false,
+      hideCheckbox: true,
+    );
+  }
+}

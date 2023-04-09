@@ -149,4 +149,28 @@ class RecipesService {
 
     return Future.error(initialData['message'][0]);
   }
+
+  Future createRecipe(RecipeModel recipe) async {
+    // get user token
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.post(
+      Uri.parse(
+        '$_url/',
+      ),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(recipe),
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    }
+
+    return Future.error(initialData['message'][0]);
+  }
 }

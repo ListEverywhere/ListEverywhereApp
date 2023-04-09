@@ -9,7 +9,8 @@ class ReusableFormField extends StatelessWidget {
       required this.hint,
       this.isPassword = false,
       this.minLength = 1,
-      this.maxLength = 64});
+      this.maxLength = 64,
+      this.keyboardType = TextInputType.text});
 
   /// Stores the form field text
   final TextEditingController controller;
@@ -26,11 +27,12 @@ class ReusableFormField extends StatelessWidget {
   /// Maximum field length
   final int maxLength;
 
+  final TextInputType keyboardType;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      keyboardType:
-          isPassword ? TextInputType.visiblePassword : TextInputType.text,
+      keyboardType: keyboardType,
       obscureText: isPassword,
       enableSuggestions: !isPassword,
       autocorrect: !isPassword,
@@ -68,6 +70,7 @@ class ReusableFormDateField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: TextInputType.datetime,
       readOnly: true,
       onTap: () async {
         // display date picker when clicked

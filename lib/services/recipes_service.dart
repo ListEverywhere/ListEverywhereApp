@@ -1,5 +1,6 @@
 import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/category_model.dart';
+import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/models/search_model.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
@@ -200,6 +201,70 @@ class RecipesService {
 
     var response = await http.put(
       Uri.parse('$_url/'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(updated),
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    }
+
+    return Future.error(initialData['message'][0]);
+  }
+
+  Future addRecipeItem(RecipeItemModel item) async {
+    // get user token
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.post(
+      Uri.parse('$_url/items/'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(item),
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    }
+
+    return Future.error(initialData['message'][0]);
+  }
+
+  Future deleteRecipeItem(int recipeItemId) async {
+    // get user token
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.delete(
+      Uri.parse('$_url/items/$recipeItemId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    }
+
+    return Future.error(initialData['message'][0]);
+  }
+
+  Future updateRecipeItem(RecipeItemModel updated) async {
+    // get user token
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.put(
+      Uri.parse('$_url/items/'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',

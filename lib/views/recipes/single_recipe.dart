@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
+import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/recipes_service.dart';
+import 'package:listeverywhere_app/widgets/item_dialog.dart';
+import 'package:listeverywhere_app/widgets/recipe_item_list.dart';
+import 'package:listeverywhere_app/widgets/recipe_step_list.dart';
 
 /// Provides the view for a single recipe object from the given [recipeId]
 class SingleRecipeView extends StatefulWidget {
@@ -19,6 +24,9 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
   /// instance of RecipesService
   final recipesService = RecipesService();
 
+  /// instance of ListsService
+  final listsService = ListsService();
+
   /// Returns a RecipeModel object for the recipe id given
   Future<RecipeModel> getRecipe() async {
     // use recipes service to get recipe
@@ -27,7 +35,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     return recipe;
   }
 
-  /// Returns a ListView containing numbered entries for each string in [items]
+  /// Returns a ListView containing numbered entries for each item in [items]
   ListView buildList(List<String> items) {
     return ListView.builder(
       primary: false,
@@ -44,6 +52,53 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
             ),
             title: Text(items[index]),
           ),
+        );
+      },
+    );
+  }
+
+  Future addRecipeItem(RecipeItemModel item) async {
+    await recipesService.addRecipeItem(item).then(
+      (value) {
+        Navigator.pop(context);
+        setState(() {});
+      },
+    );
+  }
+
+  Future deleteRecipeItem(int recipeItemId) async {
+    await recipesService.deleteRecipeItem(recipeItemId).then((value) {
+      setState(() {});
+    });
+  }
+
+  Future updateRecipeItem(RecipeItemModel item) async {
+    await recipesService.updateRecipeItem(item).then(
+      (value) {
+        Navigator.pop(context);
+        setState(() {});
+      },
+    );
+  }
+
+  void showRecipeItemDialog(
+    BuildContext context,
+    RecipeItemModel? original,
+    Function(RecipeItemModel) onSubmit,
+    String alertText,
+    String submitText,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return RecipeItemDialog(
+          originalItem: original,
+          onSubmit: onSubmit,
+          alertText: alertText,
+          submitText: submitText,
+          parentContext: context,
+          recipeId: widget.recipeId,
+          listsService: listsService,
         );
       },
     );
@@ -107,25 +162,59 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const Text('Ingredients:',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w500)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Ingredients:',
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w500)),
+                        ElevatedButton(
+                          onPressed: () {
+                            print('add recipe item');
+                            showRecipeItemDialog(context, null, addRecipeItem,
+                                'Add new recipe item', 'Submit');
+                          },
+                          child: const Text('Add Ingredient'),
+                        ),
+                      ],
+                    ),
                     // build list of recipe items
-                    buildList(
-                      recipe.recipeItems!
-                          .map<String>((e) => e.itemName)
-                          .toList(),
-                    ),
+                    if (recipe.recipeItems != null)
+                      RecipeItemList(
+                        items: recipe.recipeItems!,
+                        deleteCallback: deleteRecipeItem,
+                        updateCallback: (item) {
+                          print('updating recipe item ${recipe.recipeId}');
+                          showRecipeItemDialog(context, item, updateRecipeItem,
+                              'Update recipe item', 'Update');
+                        },
+                      ),
                     const SizedBox(height: 20),
-                    const Text('Steps:',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w500)),
-                    // build list of recipe steps
-                    buildList(
-                      recipe.recipeSteps!
-                          .map<String>((e) => e.stepDescription)
-                          .toList(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Steps:',
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w500)),
+                        ElevatedButton(
+                          onPressed: () {
+                            print('add recipe step');
+                          },
+                          child: const Text('Add Step'),
+                        ),
+                      ],
                     ),
+                    // build list of recipe steps
+                    if (recipe.recipeSteps != null)
+                      RecipeStepList(
+                        steps: recipe.recipeSteps!,
+                        deleteCallback: (id) {
+                          print('deleting recipe step id $id');
+                        },
+                        updateCallback: (step) {
+                          print('updating recipe step id ${step.recipeStepId}');
+                        },
+                      ),
                   ],
                 ),
               ),

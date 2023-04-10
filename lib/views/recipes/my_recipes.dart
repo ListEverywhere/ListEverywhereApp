@@ -40,7 +40,13 @@ class MyRecipesViewState extends State<MyRecipesView> {
     setState(() {});
   }
 
-  Future onUpdate(RecipeModel recipe) async {}
+  Future onUpdate(RecipeModel recipe) async {
+    await Navigator.pushNamed(context, '/recipes/edit', arguments: recipe).then(
+      (value) {
+        setState(() {});
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

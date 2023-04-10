@@ -35,7 +35,7 @@ class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
 
   /// Is item checked
   bool checked = false;
-  bool edit = false;
+  bool edit = true;
 
   @override
   void initState() {

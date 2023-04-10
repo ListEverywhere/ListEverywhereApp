@@ -3,6 +3,7 @@ import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
 import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
+import 'package:listeverywhere_app/widgets/floating_action_button_container.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
 import 'package:listeverywhere_app/widgets/shopping_list_entry.dart';
@@ -162,14 +163,6 @@ class MyListsViewState extends State<MyListsView> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // create new list
-          await createNewList(context);
-          setState(() {});
-        },
-        child: const Icon(Icons.add),
-      ),
       body: FutureBuilder<List<ListModel>>(
         future: getLists(),
         builder: (context, snapshot) {
@@ -183,21 +176,38 @@ class MyListsViewState extends State<MyListsView> {
               );
             }
             // build list of shopping lists
-            return ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                return ShoppingListEntry(
-                  list: data[index],
-                  updateCallback: (list) async {
-                    await showUpdateList(context, list);
-                    setState(() {});
-                  },
-                  deleteCallback: (id) async {
-                    await deleteList(id);
-                    setState(() {});
-                  },
-                );
-              },
+            return Column(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      return ShoppingListEntry(
+                        list: data[index],
+                        updateCallback: (list) async {
+                          await showUpdateList(context, list);
+                          setState(() {});
+                        },
+                        deleteCallback: (id) async {
+                          await deleteList(id);
+                          setState(() {});
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: FloatingActionButtonContainer(
+                    onPressed: () async {
+                      // create new list
+                      await createNewList(context);
+                      setState(() {});
+                    },
+                    icon: const Icon(Icons.add),
+                  ),
+                )
+              ],
             );
           } else if (snapshot.hasError) {
             print(snapshot.error);

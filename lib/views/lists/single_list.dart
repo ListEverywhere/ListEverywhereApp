@@ -3,6 +3,7 @@ import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
+import 'package:listeverywhere_app/widgets/floating_action_button_container.dart';
 import 'package:listeverywhere_app/widgets/item_dialog.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
@@ -216,16 +217,6 @@ class SingleListViewState extends State<SingleListView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(listName)),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            print('Add new list item');
-            // show add item dialog
-            await updateItem(
-                context, null, 'Add an item to your list', 'Add item', addItem);
-            setState(() {});
-          },
-          child: const Icon(Icons.add),
-        ),
         body: FutureBuilder(
           future: getList(),
           builder: (context, snapshot) {
@@ -237,7 +228,26 @@ class SingleListViewState extends State<SingleListView> {
                     child: Text('There are no items in this list.'));
               }
               // data is available and not empty
-              return buildItemList(snapshot.data!);
+              return Column(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: buildItemList(snapshot.data!),
+                  ),
+                  Expanded(
+                    child: FloatingActionButtonContainer(
+                      onPressed: () async {
+                        print('Add new list item');
+                        // show add item dialog
+                        await updateItem(context, null,
+                            'Add an item to your list', 'Add item', addItem);
+                        setState(() {});
+                      },
+                      icon: const Icon(Icons.add),
+                    ),
+                  ),
+                ],
+              );
             }
             // data is not ready
             return const Center(child: CircularProgressIndicator());

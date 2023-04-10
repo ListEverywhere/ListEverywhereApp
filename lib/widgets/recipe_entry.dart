@@ -7,6 +7,8 @@ class RecipeEntry extends StatelessWidget {
     super.key,
     required this.recipe,
     this.enableActions = true,
+    required this.deleteCallback,
+    required this.updateCallback,
   });
 
   /// The recipe object
@@ -14,6 +16,10 @@ class RecipeEntry extends StatelessWidget {
 
   /// If edit/delete actions should be shown
   final bool enableActions;
+
+  final Function(int) deleteCallback;
+
+  final Function(RecipeModel) updateCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +50,7 @@ class RecipeEntry extends StatelessWidget {
                       onPressed: () {
                         // update recipe
                         print('Updating recipe ID ${recipe.recipeId}');
+                        updateCallback(recipe);
                       },
                       icon: const Icon(Icons.edit),
                     ),
@@ -51,6 +58,7 @@ class RecipeEntry extends StatelessWidget {
                       onPressed: () {
                         // delete recipe
                         print('Deleting recipe ID ${recipe.recipeId}');
+                        deleteCallback(recipe.recipeId);
                       },
                       icon: const Icon(Icons.delete_forever),
                     ),

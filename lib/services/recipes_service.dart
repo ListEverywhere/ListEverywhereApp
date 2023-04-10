@@ -173,4 +173,24 @@ class RecipesService {
 
     return Future.error(initialData['message'][0]);
   }
+
+  Future deleteRecipe(int recipeId) async {
+    // get user token
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.delete(
+      Uri.parse('$_url/$recipeId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    }
+
+    return Future.error(initialData['message'][0]);
+  }
 }

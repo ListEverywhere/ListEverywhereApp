@@ -35,7 +35,12 @@ class SearchRecipesResultsViewState extends State<SearchRecipesResultsView> {
             List<RecipeModel> data = snapshot.data!;
             if (data.isNotEmpty) {
               // user has recipes, create list of recipe entries
-              return RecipeListView(recipes: data);
+              return RecipeListView(
+                recipes: data,
+                enableActions: false,
+                deleteCallback: (p0) {},
+                updateCallback: (p0) {},
+              );
             } else {
               // user has no recipes
               return const Center(

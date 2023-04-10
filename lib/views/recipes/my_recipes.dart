@@ -3,6 +3,7 @@ import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/services/recipes_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
 import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
+import 'package:listeverywhere_app/widgets/floating_action_button_container.dart';
 import 'package:listeverywhere_app/widgets/recipe_entry.dart';
 import 'package:listeverywhere_app/widgets/recipes_list_view.dart';
 
@@ -34,19 +35,20 @@ class MyRecipesViewState extends State<MyRecipesView> {
     return recipes;
   }
 
+  Future onDelete(int recipeId) async {
+    await recipesService.deleteRecipe(recipeId);
+    setState(() {});
+  }
+
+  Future onUpdate(RecipeModel recipe) async {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Recipes'),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // create new recipe
-          Navigator.pushNamed(context, '/recipes/create');
-        },
-        child: const Icon(Icons.add),
-      ),
+      //floatingActionButton:
       body: FutureBuilder(
         future: getUserRecipes(),
         builder: (context, snapshot) {
@@ -56,7 +58,30 @@ class MyRecipesViewState extends State<MyRecipesView> {
             List<RecipeModel> data = snapshot.data!;
             if (data.isNotEmpty) {
               // user has recipes, create list of recipe entries
-              return RecipeListView(recipes: data);
+              return Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: RecipeListView(
+                      recipes: data,
+                      updateCallback: onUpdate,
+                      deleteCallback: onDelete,
+                    ),
+                  ),
+                  Expanded(
+                      child: FloatingActionButtonContainer(
+                    icon: const Icon(Icons.add),
+                    onPressed: () async {
+                      // create new recipe
+                      await Navigator.pushNamed(context, '/recipes/create')
+                          .then((value) {
+                        setState(() {});
+                      });
+                    },
+                  )),
+                ],
+              );
             } else {
               // user has no recipes
               return const Center(

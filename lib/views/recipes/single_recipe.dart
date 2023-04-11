@@ -6,6 +6,7 @@ import 'package:listeverywhere_app/services/recipes_service.dart';
 import 'package:listeverywhere_app/widgets/item_dialog.dart';
 import 'package:listeverywhere_app/widgets/recipe_item_list.dart';
 import 'package:listeverywhere_app/widgets/recipe_step_list.dart';
+import 'package:listeverywhere_app/widgets/text_field_dialog.dart';
 
 /// Provides the view for a single recipe object from the given [recipeId]
 class SingleRecipeView extends StatefulWidget {
@@ -81,6 +82,26 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     );
   }
 
+  Future addRecipeStep(RecipeStepModel step) async {
+    await recipesService.addRecipeStep(step).then((value) {
+      Navigator.pop(context);
+      setState(() {});
+    });
+  }
+
+  Future deleteRecipeStep(int recipeStepId) async {
+    await recipesService.deleteRecipeStep(recipeStepId).then((value) {
+      setState(() {});
+    });
+  }
+
+  Future updateRecipeStep(RecipeStepModel updated) async {
+    await recipesService.updateRecipeStep(updated).then((value) {
+      Navigator.pop(context);
+      setState(() {});
+    });
+  }
+
   void showRecipeItemDialog(
     BuildContext context,
     RecipeItemModel? original,
@@ -99,6 +120,41 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
           parentContext: context,
           recipeId: widget.recipeId,
           listsService: listsService,
+        );
+      },
+    );
+  }
+
+  void showRecipeStepDialog(
+    BuildContext context,
+    RecipeStepModel? original,
+    Function(RecipeStepModel) onSubmit,
+    String alertText,
+    String submitText,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return TextFieldDialog(
+          initialText: original != null ? original.stepDescription : '',
+          alertText: alertText,
+          formHint: 'Step Description',
+          submitText: submitText,
+          onSubmit: (stepDescription) {
+            if (original != null) {
+              original.stepDescription = stepDescription;
+
+              onSubmit(original);
+            } else {
+              var step = RecipeStepModel(
+                recipeStepId: -1,
+                stepDescription: stepDescription,
+                recipeId: widget.recipeId,
+              );
+
+              onSubmit(step);
+            }
+          },
         );
       },
     );
@@ -199,6 +255,8 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
                         ElevatedButton(
                           onPressed: () {
                             print('add recipe step');
+                            showRecipeStepDialog(context, null, addRecipeStep,
+                                'Add recipe step', 'Submit');
                           },
                           child: const Text('Add Step'),
                         ),
@@ -210,9 +268,12 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
                         steps: recipe.recipeSteps!,
                         deleteCallback: (id) {
                           print('deleting recipe step id $id');
+                          deleteRecipeStep(id);
                         },
                         updateCallback: (step) {
                           print('updating recipe step id ${step.recipeStepId}');
+                          showRecipeStepDialog(context, step, updateRecipeStep,
+                              'Updating recipe step', 'Update');
                         },
                       ),
                   ],

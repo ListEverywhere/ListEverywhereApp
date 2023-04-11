@@ -7,6 +7,7 @@ import 'package:listeverywhere_app/widgets/floating_action_button_container.dart
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
 import 'package:listeverywhere_app/widgets/shopping_list_entry.dart';
+import 'package:listeverywhere_app/widgets/text_field_dialog.dart';
 
 /// Displays a list of a user's Shopping Lists
 class MyListsView extends StatefulWidget {
@@ -83,58 +84,33 @@ class MyListsViewState extends State<MyListsView> {
   /// Displays the dialog for adding/updating a shopping list
   Future<void> updateListDialog(BuildContext context, ListModel? list,
       String alertText, String submitText, Function(ListModel?) onSubmit) {
-    // stores the list name text
-    TextEditingController listName = TextEditingController();
-    // set the field text if a list is specified
-    listName.text = list != null ? list.listName : '';
-
     // displays the dialog
     return showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text(alertText),
-          content: ReusableFormField(controller: listName, hint: 'List Name'),
-          actions: [
-            SizedBox(
-              width: 100,
-              height: 50,
-              child: ReusableButton(
-                padding: const EdgeInsets.all(4.0),
-                text: 'Cancel',
-                onTap: () {
-                  // exit dialog, no action
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-            SizedBox(
-              width: 100,
-              height: 50,
-              child: ReusableButton(
-                padding: const EdgeInsets.all(4.0),
-                text: submitText,
-                onTap: () async {
-                  if (list != null) {
-                    // if list is not null, list is being updated
-                    list.listName = listName.text;
-                    // run callback
-                    onSubmit(list);
-                  } else {
-                    // create new list
-                    ListModel newList = ListModel(
-                        listId: -1,
-                        userId: -1,
-                        listName: listName.text,
-                        creationDate: DateTime.now(),
-                        lastModified: DateTime.now());
-                    // run callback
-                    onSubmit(newList);
-                  }
-                },
-              ),
-            )
-          ],
+        return TextFieldDialog(
+          alertText: alertText,
+          formHint: 'List Name',
+          submitText: submitText,
+          initialText: list != null ? list.listName : '',
+          onSubmit: (newName) {
+            if (list != null) {
+              // if list is not null, list is being updated
+              list.listName = newName;
+              // run callback
+              onSubmit(list);
+            } else {
+              // create new list
+              ListModel newList = ListModel(
+                  listId: -1,
+                  userId: -1,
+                  listName: newName,
+                  creationDate: DateTime.now(),
+                  lastModified: DateTime.now());
+              // run callback
+              onSubmit(newList);
+            }
+          },
         );
       },
     );

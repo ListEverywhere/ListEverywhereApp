@@ -52,7 +52,9 @@ class ExploreRecipes extends StatelessWidget {
                   ),
                   ExploreCard(
                     cardText: 'Match List to Recipe',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, '/recipes/list-select');
+                    },
                     color: Colors.deepPurple,
                     fontColor: Colors.white,
                     cardIcon: FontAwesomeIcons.listCheck,

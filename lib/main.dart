@@ -5,6 +5,8 @@ import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/models/search_model.dart';
 import 'package:listeverywhere_app/models/user_model.dart';
+import 'package:listeverywhere_app/views/lists/select_list_for_match.dart';
+import 'package:listeverywhere_app/views/lists/select_list_items_for_match.dart';
 import 'package:listeverywhere_app/views/recipes/create_recipe.dart';
 import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
 import 'package:listeverywhere_app/views/recipes/category_recipes.dart';
@@ -76,6 +78,12 @@ class MyApp extends StatelessWidget {
           '/recipes/search/results': (context) => SearchRecipesResultsView(
                 search:
                     ModalRoute.of(context)?.settings.arguments as SearchModel,
+              ),
+          '/recipes/list-select': (context) => const SelectListForMatchView(),
+          '/recipes/list-select/item-select': (context) =>
+              SelectListItemsForMatchView(
+                listItems: ModalRoute.of(context)?.settings.arguments
+                    as List<ItemModel>,
               ),
         });
   }

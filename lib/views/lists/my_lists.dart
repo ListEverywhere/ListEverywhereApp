@@ -4,9 +4,10 @@ import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
 import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
 import 'package:listeverywhere_app/widgets/floating_action_button_container.dart';
+import 'package:listeverywhere_app/widgets/lists/shopping_lists_list_view.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
-import 'package:listeverywhere_app/widgets/shopping_list_entry.dart';
+import 'package:listeverywhere_app/widgets/lists/shopping_list_entry.dart';
 import 'package:listeverywhere_app/widgets/text_field_dialog.dart';
 
 /// Displays a list of a user's Shopping Lists
@@ -156,21 +157,21 @@ class MyListsViewState extends State<MyListsView> {
               children: [
                 Expanded(
                   flex: 4,
-                  child: ListView.builder(
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      return ShoppingListEntry(
-                        list: data[index],
-                        updateCallback: (list) async {
-                          await showUpdateList(context, list);
-                          setState(() {});
-                        },
-                        deleteCallback: (id) async {
-                          await deleteList(id);
-                          setState(() {});
-                        },
-                      );
+                  child: ShoppingListsListView(
+                    onUpdate: (list) async {
+                      await showUpdateList(context, list);
+                      setState(() {});
                     },
+                    onDelete: (id) async {
+                      await deleteList(id);
+                      setState(() {});
+                    },
+                    onTap: (list) {
+                      // display single list page
+                      Navigator.pushNamed(context, '/lists/list',
+                          arguments: list.listId);
+                    },
+                    data: data,
                   ),
                 ),
                 Expanded(

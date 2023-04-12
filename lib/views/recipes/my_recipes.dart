@@ -4,8 +4,8 @@ import 'package:listeverywhere_app/services/recipes_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
 import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
 import 'package:listeverywhere_app/widgets/floating_action_button_container.dart';
-import 'package:listeverywhere_app/widgets/recipe_entry.dart';
-import 'package:listeverywhere_app/widgets/recipes_list_view.dart';
+import 'package:listeverywhere_app/widgets/recipes/recipe_entry.dart';
+import 'package:listeverywhere_app/widgets/recipes/recipes_list_view.dart';
 
 /// Displays a list of a user's Recipes
 class MyRecipesView extends StatefulWidget {

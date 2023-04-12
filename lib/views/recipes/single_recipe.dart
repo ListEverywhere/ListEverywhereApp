@@ -4,8 +4,8 @@ import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/recipes_service.dart';
 import 'package:listeverywhere_app/widgets/item_dialog.dart';
-import 'package:listeverywhere_app/widgets/recipe_item_list.dart';
-import 'package:listeverywhere_app/widgets/recipe_step_list.dart';
+import 'package:listeverywhere_app/widgets/recipes/recipe_item_list.dart';
+import 'package:listeverywhere_app/widgets/recipes/recipe_step_list.dart';
 import 'package:listeverywhere_app/widgets/text_field_dialog.dart';
 
 /// Provides the view for a single recipe object from the given [recipeId]

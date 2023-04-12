@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/models/search_model.dart';
 import 'package:listeverywhere_app/services/recipes_service.dart';
-import 'package:listeverywhere_app/widgets/recipes_list_view.dart';
+import 'package:listeverywhere_app/widgets/recipes/recipes_list_view.dart';
 
 class SearchRecipesResultsView extends StatefulWidget {
   const SearchRecipesResultsView({super.key, required this.search});

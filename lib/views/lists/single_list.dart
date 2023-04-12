@@ -5,9 +5,10 @@ import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
 import 'package:listeverywhere_app/widgets/floating_action_button_container.dart';
 import 'package:listeverywhere_app/widgets/item_dialog.dart';
+import 'package:listeverywhere_app/widgets/lists/list_items_list_view.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
-import 'package:listeverywhere_app/widgets/shopping_list_item_entry.dart';
+import 'package:listeverywhere_app/widgets/lists/shopping_list_item_entry.dart';
 
 /// Provides the view for a single shopping list using the [listId]
 class SingleListView extends StatefulWidget {
@@ -165,44 +166,16 @@ class SingleListViewState extends State<SingleListView> {
     if (list.listItems != null) {
       var items = list.listItems!;
       // create reordable list
-      return ReorderableListView.builder(
-        buildDefaultDragHandles: false,
-        onReorder: (oldIndex, newIndex) async {
-          // update position of item
-          if (oldIndex < newIndex) {
-            // decrease newIndex by 1 when moving items down the list
-            newIndex--;
-          }
-
-          // remove item at old position
-          ItemModel current = items.removeAt(oldIndex);
-
-          current.position = newIndex;
-
-          // insert item at new position
-          items.insert(newIndex, current);
-
-          if (oldIndex != newIndex) {
-            // update item positions
-            for (int i = 0; i < items.length; i++) {
-              items[i].position = i;
-            }
-            // update position in API
-            print('Updating item: $current to position $newIndex');
-            var response = await listsService.updateItem(current, true);
-            print('Response: $response');
-          }
-        },
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          // build the item entry
-          return ShoppingListItemEntry(
-            item: items[index],
-            key: Key(items[index].hashCode.toString()),
-            checkedCallback: onChecked,
-            deleteCallback: onDelete,
-            updateCallback: onUpdate,
-          );
+      return ListItemsListView(
+        items: items,
+        onChecked: onChecked,
+        onDelete: onDelete,
+        onUpdate: onUpdate,
+        onReorder: (index, current) async {
+          // update position in API
+          print('Updating item: $current to position $index');
+          var response = await listsService.updateItem(current, true);
+          print('Response: $response');
         },
       );
     } else {
@@ -211,6 +184,29 @@ class SingleListViewState extends State<SingleListView> {
         child: Text('List has no items.'),
       );
     }
+  }
+
+  Widget buildListItemContainer(BuildContext context, Widget child) {
+    return Column(
+      children: [
+        Expanded(
+          flex: 4,
+          child: child,
+        ),
+        Expanded(
+          child: FloatingActionButtonContainer(
+            onPressed: () async {
+              print('Add new list item');
+              // show add item dialog
+              await updateItem(context, null, 'Add an item to your list',
+                  'Add item', addItem);
+              setState(() {});
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -224,29 +220,17 @@ class SingleListViewState extends State<SingleListView> {
             if (snapshot.hasData) {
               if (snapshot.data!.listItems!.isEmpty) {
                 // list has no items
-                return const Center(
-                    child: Text('There are no items in this list.'));
+                return buildListItemContainer(
+                  context,
+                  const Center(
+                    child: Text('There are no items in this list.'),
+                  ),
+                );
               }
               // data is available and not empty
-              return Column(
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: buildItemList(snapshot.data!),
-                  ),
-                  Expanded(
-                    child: FloatingActionButtonContainer(
-                      onPressed: () async {
-                        print('Add new list item');
-                        // show add item dialog
-                        await updateItem(context, null,
-                            'Add an item to your list', 'Add item', addItem);
-                        setState(() {});
-                      },
-                      icon: const Icon(Icons.add),
-                    ),
-                  ),
-                ],
+              return buildListItemContainer(
+                context,
+                buildItemList(snapshot.data!),
               );
             }
             // data is not ready

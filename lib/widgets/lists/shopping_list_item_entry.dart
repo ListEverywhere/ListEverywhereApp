@@ -9,6 +9,7 @@ class ShoppingListItemEntry extends StatefulWidget {
     required this.checkedCallback,
     required this.deleteCallback,
     required this.updateCallback,
+    this.enableActions = true,
   });
 
   /// Item object
@@ -23,6 +24,8 @@ class ShoppingListItemEntry extends StatefulWidget {
   /// Callback function for when item is updated
   final Function(ItemModel) updateCallback;
 
+  final bool enableActions;
+
   @override
   State<StatefulWidget> createState() {
     return ShoppingListItemEntryState();
@@ -35,7 +38,6 @@ class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
 
   /// Is item checked
   bool checked = false;
-  bool edit = true;
 
   @override
   void initState() {
@@ -70,7 +72,7 @@ class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
       checkedCallback: checkedCallback,
       deleteCallback: deleteCallback,
       updateCallback: updateCallback,
-      edit: edit,
+      edit: widget.enableActions,
     );
   }
 }

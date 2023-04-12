@@ -15,7 +15,8 @@ class ListsService {
   final String _url = '$apiUrl/lists';
 
   /// Returns a list of shopping lists from a given [userId]
-  Future<List<ListModel>> getUserLists(int userId) async {
+  Future<List<ListModel>> getUserLists(int userId,
+      {noItems = true, noCustomItems = false}) async {
     // get user token
     String token = await userService.getTokenIfSet();
 
@@ -23,7 +24,8 @@ class ListsService {
 
     // perform HTTP request to get lists
     var response = await http.get(
-      Uri.parse('$_url/user/$userId?noItems=true'),
+      Uri.parse(
+          '$_url/user/$userId?noItems=$noItems&noCustomItems=$noCustomItems'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

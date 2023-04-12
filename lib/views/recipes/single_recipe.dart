@@ -6,14 +6,15 @@ import 'package:listeverywhere_app/services/recipes_service.dart';
 import 'package:listeverywhere_app/widgets/item_dialog.dart';
 import 'package:listeverywhere_app/widgets/recipes/recipe_item_list.dart';
 import 'package:listeverywhere_app/widgets/recipes/recipe_step_list.dart';
+import 'package:listeverywhere_app/widgets/reusable_button.dart';
 import 'package:listeverywhere_app/widgets/text_field_dialog.dart';
 
 /// Provides the view for a single recipe object from the given [recipeId]
 class SingleRecipeView extends StatefulWidget {
-  SingleRecipeView({super.key, required this.recipeId});
+  const SingleRecipeView({super.key, required this.recipeInit});
 
   /// Recipe ID to load
-  final int recipeId;
+  final RecipeViewModel recipeInit;
 
   @override
   State<StatefulWidget> createState() {
@@ -28,10 +29,18 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
   /// instance of ListsService
   final listsService = ListsService();
 
+  late bool edit;
+
+  @override
+  void initState() {
+    super.initState();
+    edit = widget.recipeInit.edit;
+  }
+
   /// Returns a RecipeModel object for the recipe id given
   Future<RecipeModel> getRecipe() async {
     // use recipes service to get recipe
-    var recipe = await recipesService.getRecipeById(widget.recipeId);
+    var recipe = await recipesService.getRecipeById(widget.recipeInit.recipeId);
 
     return recipe;
   }
@@ -118,7 +127,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
           alertText: alertText,
           submitText: submitText,
           parentContext: context,
-          recipeId: widget.recipeId,
+          recipeId: widget.recipeInit.recipeId,
           listsService: listsService,
         );
       },
@@ -149,7 +158,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
               var step = RecipeStepModel(
                 recipeStepId: -1,
                 stepDescription: stepDescription,
-                recipeId: widget.recipeId,
+                recipeId: widget.recipeInit.recipeId,
               );
 
               onSubmit(step);
@@ -157,6 +166,62 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
           },
         );
       },
+    );
+  }
+
+  Widget? buildMergeButton() {
+    return Center(
+      child: ReusableButton(
+        padding: const EdgeInsets.all(16.0),
+        color: Colors.blue,
+        textColor: Colors.white,
+        onTap: () async {
+          print('Merge with list ${widget.recipeInit.listId}');
+          await listsService
+              .mergeListWithRecipe(
+                  widget.recipeInit.listId!, widget.recipeInit.recipeId)
+              .then((value) {
+            // successfully merged recipe with list
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text('Success'),
+                  content: const Text('Successfully merged list with recipe!'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.popUntil(
+                          context, ModalRoute.withName('/recipes')),
+                      child: const Text('Back to Explore'),
+                    ),
+                  ],
+                );
+              },
+            );
+          }).onError((error, stackTrace) {
+            // failed to do the recipe and list merge
+            showDialog(
+              context: context,
+              builder: (context) {
+                print(error);
+                return AlertDialog(
+                  title: const Text('Error'),
+                  content:
+                      const Text('Failed to merge the recipe with the list.'),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Close'))
+                  ],
+                );
+              },
+            );
+          });
+        },
+        text: 'Merge with List',
+      ),
     );
   }
 
@@ -175,110 +240,148 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
             // data is received
             RecipeModel recipe = snapshot.data!;
             // return scrollable view
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
+            return Column(
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            recipe.recipeName,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                fontSize: 48, fontWeight: FontWeight.w700),
-                          ),
-                          const SizedBox(height: 20),
-                          Flexible(
-                            child: Text(
-                              recipe.recipeDescription,
-                              textAlign: TextAlign.center,
+                          Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  recipe.recipeName,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                      fontSize: 48,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                const SizedBox(height: 20),
+                                Flexible(
+                                  child: Text(
+                                    recipe.recipeDescription,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                Text.rich(
+                                  TextSpan(
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                      children: [
+                                        const TextSpan(
+                                            text: 'Cook Time: ',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        TextSpan(
+                                            text: '${recipe.cookTime} minutes'),
+                                      ]),
+                                ),
+                              ],
                             ),
                           ),
                           const SizedBox(height: 20),
-                          Text.rich(
-                            TextSpan(
-                                style: const TextStyle(
-                                  fontSize: 12,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Ingredients:',
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w500)),
+                              if (edit)
+                                ElevatedButton(
+                                  onPressed: () {
+                                    print('add recipe item');
+                                    showRecipeItemDialog(
+                                        context,
+                                        null,
+                                        addRecipeItem,
+                                        'Add new recipe item',
+                                        'Submit');
+                                  },
+                                  child: const Text('Add Ingredient'),
                                 ),
-                                children: [
-                                  const TextSpan(
-                                      text: 'Cook Time: ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  TextSpan(text: '${recipe.cookTime} minutes'),
-                                ]),
+                            ],
                           ),
+                          // build list of recipe items
+                          if (recipe.recipeItems != null)
+                            RecipeItemList(
+                              edit: edit,
+                              items: recipe.recipeItems!,
+                              deleteCallback: deleteRecipeItem,
+                              updateCallback: (item) {
+                                print(
+                                    'updating recipe item ${recipe.recipeId}');
+                                showRecipeItemDialog(
+                                    context,
+                                    item,
+                                    updateRecipeItem,
+                                    'Update recipe item',
+                                    'Update');
+                              },
+                            ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Steps:',
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w500)),
+                              if (edit)
+                                ElevatedButton(
+                                  onPressed: () {
+                                    print('add recipe step');
+                                    showRecipeStepDialog(
+                                        context,
+                                        null,
+                                        addRecipeStep,
+                                        'Add recipe step',
+                                        'Submit');
+                                  },
+                                  child: const Text('Add Step'),
+                                ),
+                            ],
+                          ),
+                          // build list of recipe steps
+                          if (recipe.recipeSteps != null)
+                            RecipeStepList(
+                              edit: edit,
+                              steps: recipe.recipeSteps!,
+                              deleteCallback: (id) {
+                                print('deleting recipe step id $id');
+                                deleteRecipeStep(id);
+                              },
+                              updateCallback: (step) {
+                                print(
+                                    'updating recipe step id ${step.recipeStepId}');
+                                showRecipeStepDialog(
+                                    context,
+                                    step,
+                                    updateRecipeStep,
+                                    'Updating recipe step',
+                                    'Update');
+                              },
+                            ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Ingredients:',
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.w500)),
-                        ElevatedButton(
-                          onPressed: () {
-                            print('add recipe item');
-                            showRecipeItemDialog(context, null, addRecipeItem,
-                                'Add new recipe item', 'Submit');
-                          },
-                          child: const Text('Add Ingredient'),
-                        ),
-                      ],
-                    ),
-                    // build list of recipe items
-                    if (recipe.recipeItems != null)
-                      RecipeItemList(
-                        items: recipe.recipeItems!,
-                        deleteCallback: deleteRecipeItem,
-                        updateCallback: (item) {
-                          print('updating recipe item ${recipe.recipeId}');
-                          showRecipeItemDialog(context, item, updateRecipeItem,
-                              'Update recipe item', 'Update');
-                        },
-                      ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Steps:',
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.w500)),
-                        ElevatedButton(
-                          onPressed: () {
-                            print('add recipe step');
-                            showRecipeStepDialog(context, null, addRecipeStep,
-                                'Add recipe step', 'Submit');
-                          },
-                          child: const Text('Add Step'),
-                        ),
-                      ],
-                    ),
-                    // build list of recipe steps
-                    if (recipe.recipeSteps != null)
-                      RecipeStepList(
-                        steps: recipe.recipeSteps!,
-                        deleteCallback: (id) {
-                          print('deleting recipe step id $id');
-                          deleteRecipeStep(id);
-                        },
-                        updateCallback: (step) {
-                          print('updating recipe step id ${step.recipeStepId}');
-                          showRecipeStepDialog(context, step, updateRecipeStep,
-                              'Updating recipe step', 'Update');
-                        },
-                      ),
-                  ],
+                  ),
                 ),
-              ),
+                if (widget.recipeInit.listId != null)
+                  Expanded(
+                      child: Container(
+                    child: buildMergeButton(),
+                  )),
+              ],
             );
           } else {
             // recipe is not loaded yet, show spinner

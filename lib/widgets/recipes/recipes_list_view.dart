@@ -9,12 +9,14 @@ class RecipeListView extends StatelessWidget {
     this.enableActions = true,
     required this.updateCallback,
     required this.deleteCallback,
+    this.listIdForMerge,
   });
 
   final List<RecipeModel> recipes;
   final bool enableActions;
   final Function(RecipeModel) updateCallback;
   final Function(int) deleteCallback;
+  final int? listIdForMerge;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,7 @@ class RecipeListView extends StatelessWidget {
           enableActions: enableActions,
           deleteCallback: deleteCallback,
           updateCallback: updateCallback,
+          listIdForMerge: listIdForMerge,
         );
       },
     );

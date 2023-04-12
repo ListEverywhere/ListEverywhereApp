@@ -8,11 +8,13 @@ class RecipeItemList extends StatelessWidget {
     required this.items,
     required this.deleteCallback,
     required this.updateCallback,
+    this.edit = true,
   });
 
   final List<RecipeItemModel> items;
   final Function(int) deleteCallback;
   final Function(RecipeItemModel) updateCallback;
+  final bool edit;
 
   @override
   Widget build(BuildContext context) {
@@ -30,26 +32,28 @@ class RecipeItemList extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             title: Text(items[index].itemName),
-            trailing: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    // update recipe
-                    updateCallback(items[index]);
-                  },
-                  icon: const Icon(Icons.edit),
-                ),
-                IconButton(
-                  onPressed: () {
-                    // delete recipe
-                    deleteCallback(items[index].recipeItemId);
-                  },
-                  icon: const Icon(Icons.delete_forever),
-                ),
-              ],
-            ),
+            trailing: edit
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          // update recipe
+                          updateCallback(items[index]);
+                        },
+                        icon: const Icon(Icons.edit),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          // delete recipe
+                          deleteCallback(items[index].recipeItemId);
+                        },
+                        icon: const Icon(Icons.delete_forever),
+                      ),
+                    ],
+                  )
+                : null,
           ),
         );
       },

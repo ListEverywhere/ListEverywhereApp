@@ -107,3 +107,18 @@ class RecipeStepModel {
     };
   }
 }
+
+class RecipeViewModel {
+  int recipeId;
+  bool edit;
+  int? listId;
+
+  RecipeViewModel({required this.recipeId, this.edit = true, this.listId});
+}
+
+class RecipeMatchModel {
+  List<int> listItemIds;
+  int listId;
+
+  RecipeMatchModel({required this.listItemIds, required this.listId});
+}

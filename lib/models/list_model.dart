@@ -59,3 +59,10 @@ class ListModel {
     };
   }
 }
+
+class ListMatchModel {
+  List<ListItemModel> listItems;
+  int listId;
+
+  ListMatchModel({required this.listItems, required this.listId});
+}

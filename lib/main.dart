@@ -8,6 +8,7 @@ import 'package:listeverywhere_app/models/user_model.dart';
 import 'package:listeverywhere_app/views/lists/select_list_for_match.dart';
 import 'package:listeverywhere_app/views/lists/select_list_items_for_match.dart';
 import 'package:listeverywhere_app/views/recipes/create_recipe.dart';
+import 'package:listeverywhere_app/views/recipes/select_recipe_for_match.dart';
 import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
 import 'package:listeverywhere_app/views/recipes/category_recipes.dart';
 import 'package:listeverywhere_app/views/recipes/explore_recipes.dart';
@@ -61,7 +62,8 @@ class MyApp extends StatelessWidget {
               listId: ModalRoute.of(context)?.settings.arguments as int),
           '/recipes/user': (context) => const MyRecipesView(),
           '/recipes/recipe': (context) => SingleRecipeView(
-                recipeId: ModalRoute.of(context)?.settings.arguments as int,
+                recipeInit: ModalRoute.of(context)?.settings.arguments
+                    as RecipeViewModel,
               ),
           '/recipes': (context) => const ExploreRecipes(),
           '/recipes/categories': (context) => const RecipeCategoriesView(),
@@ -82,8 +84,13 @@ class MyApp extends StatelessWidget {
           '/recipes/list-select': (context) => const SelectListForMatchView(),
           '/recipes/list-select/item-select': (context) =>
               SelectListItemsForMatchView(
-                listItems: ModalRoute.of(context)?.settings.arguments
-                    as List<ItemModel>,
+                listItemsInit: ModalRoute.of(context)?.settings.arguments
+                    as ListMatchModel,
+              ),
+          '/recipes/list-select/item-select/results': (context) =>
+              SelectRecipeForMatchView(
+                listItemIdsInit: ModalRoute.of(context)?.settings.arguments
+                    as RecipeMatchModel,
               ),
         });
   }

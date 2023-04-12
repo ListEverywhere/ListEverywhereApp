@@ -324,4 +324,24 @@ class ListsService {
     // error has occurred, return message from response
     return Future.error(Exception(initialData['message'][0]));
   }
+
+  Future mergeListWithRecipe(int listId, int recipeId) async {
+    // get user token
+    var token = await userService.getTokenIfSet();
+
+    var response = await http.post(
+      Uri.parse('$_url/$listId/merge-recipe/$recipeId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    }
+
+    return Future.error(initialData['message'][0]);
+  }
 }

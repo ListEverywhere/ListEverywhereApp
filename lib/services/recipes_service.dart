@@ -344,4 +344,33 @@ class RecipesService {
 
     return Future.error(initialData['message'][0]);
   }
+
+  Future<List<RecipeModel>> matchListItemsToRecipes(
+      List<int> listItemIds) async {
+    // get user token
+    var token = await userService.getTokenIfSet();
+
+    var response = await http.post(
+      Uri.parse('$_url/item-match'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(listItemIds),
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      // recipes was found, map JSON data to list of RecipeModel objects
+      var recipes = (initialData as List<dynamic>).map((e) {
+        return RecipeModel.fromJson(e);
+      }).toList();
+      return recipes;
+    } else if (response.statusCode == 404) {
+      return [];
+    }
+
+    return Future.error(initialData['message'][0]);
+  }
 }

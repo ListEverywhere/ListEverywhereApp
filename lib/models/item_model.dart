@@ -146,3 +146,20 @@ class RecipeItemModel extends ItemModel {
     );
   }
 }
+
+class MatchListItemModel {
+  int listItemId;
+  int itemId;
+
+  MatchListItemModel({
+    required this.listItemId,
+    required this.itemId,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      other is MatchListItemModel && other.itemId == itemId;
+
+  @override
+  int get hashCode => itemId;
+}

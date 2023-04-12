@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
@@ -61,9 +62,17 @@ class SelectListForMatchViewState extends State<SelectListForMatchView> {
                       onDelete: (p0) {},
                       onTap: (p0) {
                         print('Selected list ${p0.listId}');
+                        var items = p0.listItems!.map(
+                          (e) {
+                            return e as ListItemModel;
+                          },
+                        ).toList();
                         Navigator.pushNamed(
                             context, '/recipes/list-select/item-select',
-                            arguments: p0.listItems);
+                            arguments: ListMatchModel(
+                              listItems: items,
+                              listId: p0.listId,
+                            ));
                       },
                       data: data,
                       enableActions: false,

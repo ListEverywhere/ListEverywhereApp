@@ -132,7 +132,8 @@ class RegisterViewState extends State<RegisterView> {
                                           TextButton(
                                             onPressed: () => Navigator.popUntil(
                                                 context,
-                                                ModalRoute.withName('/')),
+                                                ModalRoute.withName(
+                                                    '/welcome')),
                                             child: const Text('Close'),
                                           ),
                                         ],

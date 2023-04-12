@@ -9,6 +9,7 @@ class RecipeEntry extends StatelessWidget {
     this.enableActions = true,
     required this.deleteCallback,
     required this.updateCallback,
+    this.listIdForMerge,
   });
 
   /// The recipe object
@@ -21,6 +22,8 @@ class RecipeEntry extends StatelessWidget {
 
   final Function(RecipeModel) updateCallback;
 
+  final int? listIdForMerge;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -30,7 +33,10 @@ class RecipeEntry extends StatelessWidget {
         onTap: () {
           // display single recipe
           Navigator.pushNamed(context, '/recipes/recipe',
-              arguments: recipe.recipeId);
+              arguments: RecipeViewModel(
+                  recipeId: recipe.recipeId,
+                  edit: enableActions,
+                  listId: listIdForMerge));
         },
         child: SizedBox(
           height: 80.0,

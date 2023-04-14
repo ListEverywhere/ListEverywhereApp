@@ -12,11 +12,17 @@ class ShoppingListEntry extends StatelessWidget {
   /// Callback function for deleting
   final Function(int) deleteCallback;
 
+  final Function() onTap;
+
+  final bool enableActions;
+
   const ShoppingListEntry(
       {super.key,
       required this.list,
       required this.updateCallback,
-      required this.deleteCallback});
+      required this.deleteCallback,
+      required this.onTap,
+      this.enableActions = true});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +30,7 @@ class ShoppingListEntry extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       child: InkWell(
         splashColor: Colors.amber,
-        onTap: () {
-          // display single list page
-          Navigator.pushNamed(context, '/lists/list', arguments: list.listId);
-        },
+        onTap: onTap,
         child: SizedBox(
           height: 80.0,
           child: Row(
@@ -37,25 +40,26 @@ class ShoppingListEntry extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(list.listName),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      // update shopping list
-                      updateCallback(list);
-                    },
-                    icon: const Icon(Icons.edit),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      // delete shopping list
-                      deleteCallback(list.listId);
-                    },
-                    icon: const Icon(Icons.delete_forever),
-                  ),
-                ],
-              )
+              if (enableActions)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        // update shopping list
+                        updateCallback(list);
+                      },
+                      icon: const Icon(Icons.edit),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        // delete shopping list
+                        deleteCallback(list.listId);
+                      },
+                      icon: const Icon(Icons.delete_forever),
+                    ),
+                  ],
+                )
             ],
           ),
         ),

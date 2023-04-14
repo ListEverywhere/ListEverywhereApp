@@ -15,7 +15,8 @@ class ListsService {
   final String _url = '$apiUrl/lists';
 
   /// Returns a list of shopping lists from a given [userId]
-  Future<List<ListModel>> getUserLists(int userId) async {
+  Future<List<ListModel>> getUserLists(int userId,
+      {noItems = true, noCustomItems = false}) async {
     // get user token
     String token = await userService.getTokenIfSet();
 
@@ -23,7 +24,8 @@ class ListsService {
 
     // perform HTTP request to get lists
     var response = await http.get(
-      Uri.parse('$_url/user/$userId?noItems=true'),
+      Uri.parse(
+          '$_url/user/$userId?noItems=$noItems&noCustomItems=$noCustomItems'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -321,5 +323,25 @@ class ListsService {
     }
     // error has occurred, return message from response
     return Future.error(Exception(initialData['message'][0]));
+  }
+
+  Future mergeListWithRecipe(int listId, int recipeId) async {
+    // get user token
+    var token = await userService.getTokenIfSet();
+
+    var response = await http.post(
+      Uri.parse('$_url/$listId/merge-recipe/$recipeId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
+    }
+
+    return Future.error(initialData['message'][0]);
   }
 }

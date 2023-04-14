@@ -7,6 +7,9 @@ class RecipeEntry extends StatelessWidget {
     super.key,
     required this.recipe,
     this.enableActions = true,
+    required this.deleteCallback,
+    required this.updateCallback,
+    this.listIdForMerge,
   });
 
   /// The recipe object
@@ -14,6 +17,12 @@ class RecipeEntry extends StatelessWidget {
 
   /// If edit/delete actions should be shown
   final bool enableActions;
+
+  final Function(int) deleteCallback;
+
+  final Function(RecipeModel) updateCallback;
+
+  final int? listIdForMerge;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +33,10 @@ class RecipeEntry extends StatelessWidget {
         onTap: () {
           // display single recipe
           Navigator.pushNamed(context, '/recipes/recipe',
-              arguments: recipe.recipeId);
+              arguments: RecipeViewModel(
+                  recipeId: recipe.recipeId,
+                  edit: enableActions,
+                  listId: listIdForMerge));
         },
         child: SizedBox(
           height: 80.0,
@@ -44,6 +56,7 @@ class RecipeEntry extends StatelessWidget {
                       onPressed: () {
                         // update recipe
                         print('Updating recipe ID ${recipe.recipeId}');
+                        updateCallback(recipe);
                       },
                       icon: const Icon(Icons.edit),
                     ),
@@ -51,6 +64,7 @@ class RecipeEntry extends StatelessWidget {
                       onPressed: () {
                         // delete recipe
                         print('Deleting recipe ID ${recipe.recipeId}');
+                        deleteCallback(recipe.recipeId);
                       },
                       icon: const Icon(Icons.delete_forever),
                     ),

@@ -9,6 +9,7 @@ class ShoppingListItemEntry extends StatefulWidget {
     required this.checkedCallback,
     required this.deleteCallback,
     required this.updateCallback,
+    this.enableActions = true,
   });
 
   /// Item object
@@ -23,6 +24,8 @@ class ShoppingListItemEntry extends StatefulWidget {
   /// Callback function for when item is updated
   final Function(ItemModel) updateCallback;
 
+  final bool enableActions;
+
   @override
   State<StatefulWidget> createState() {
     return ShoppingListItemEntryState();
@@ -35,7 +38,6 @@ class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
 
   /// Is item checked
   bool checked = false;
-  bool edit = false;
 
   @override
   void initState() {
@@ -70,7 +72,7 @@ class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
       checkedCallback: checkedCallback,
       deleteCallback: deleteCallback,
       updateCallback: updateCallback,
-      edit: edit,
+      edit: widget.enableActions,
     );
   }
 }
@@ -83,7 +85,8 @@ class ItemCard extends StatelessWidget {
     required this.checkedCallback,
     required this.deleteCallback,
     required this.updateCallback,
-    this.edit = false,
+    this.edit = true,
+    this.enableDragHandles = true,
   });
 
   /// Item object
@@ -98,6 +101,8 @@ class ItemCard extends StatelessWidget {
   /// Callback for update
   final Function(ItemModel) updateCallback;
   final bool edit;
+
+  final bool enableDragHandles;
 
   @override
   Widget build(BuildContext context) {
@@ -125,30 +130,32 @@ class ItemCard extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    // updating item
-                    updateCallback(item);
-                  },
-                  icon: const Icon(Icons.edit),
-                ),
-                IconButton(
-                  onPressed: () {
-                    // deleting item
-                    deleteCallback(item);
-                  },
-                  icon: const Icon(Icons.delete_forever),
-                ),
-                // create drag handles
-                ReorderableDragStartListener(
-                  index: item.position,
-                  child: const Icon(Icons.drag_handle),
-                ),
-              ],
-            ),
+            if (edit)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      // updating item
+                      updateCallback(item);
+                    },
+                    icon: const Icon(Icons.edit),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      // deleting item
+                      deleteCallback(item);
+                    },
+                    icon: const Icon(Icons.delete_forever),
+                  ),
+                  // create drag handles
+                  if (enableDragHandles)
+                    ReorderableDragStartListener(
+                      index: item.position,
+                      child: const Icon(Icons.drag_handle),
+                    ),
+                ],
+              ),
           ],
         ),
       ),

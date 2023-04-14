@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/user_model.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
+import 'package:listeverywhere_app/widgets/reusable_button.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
 
 /// The registration page of the application
@@ -44,53 +45,81 @@ class RegisterViewState extends State<RegisterView> {
         title: const Text("Sign up for ListEverywhere"),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.all(36.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ReusableFormField(
-                      controller: firstName,
-                      hint: "First Name",
-                      minLength: 5,
-                      maxLength: 25,
+        child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(36.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Wrap(
+                    children: const [
+                      Text('Create a new account:',
+                          style: TextStyle(fontSize: 24))
+                    ],
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          ReusableFormField(
+                            controller: firstName,
+                            hint: "First Name",
+                            minLength: 5,
+                            maxLength: 25,
+                          ),
+                          ReusableFormField(
+                            controller: lastName,
+                            hint: "Last Name",
+                            minLength: 5,
+                            maxLength: 25,
+                          ),
+                          ReusableFormField(
+                            controller: email,
+                            hint: "Email Address",
+                            minLength: 4,
+                            maxLength: 50,
+                          ),
+                          ReusableFormDateField(
+                            controller: dateOfBirth,
+                            hint: "Date of birth",
+                          ),
+                          ReusableFormField(
+                            controller: username,
+                            hint: "Username",
+                            minLength: 5,
+                            maxLength: 20,
+                          ),
+                          ReusableFormField(
+                            controller: password,
+                            hint: "Password",
+                            isPassword: true,
+                            minLength: 8,
+                            maxLength: 32,
+                            keyboardType: TextInputType.visiblePassword,
+                          ),
+                        ]
+                            .map((e) => Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                  child: e,
+                                ))
+                            .toList(),
+                      ),
                     ),
-                    ReusableFormField(
-                      controller: lastName,
-                      hint: "Last Name",
-                      minLength: 5,
-                      maxLength: 25,
-                    ),
-                    ReusableFormField(
-                      controller: email,
-                      hint: "Email Address",
-                      minLength: 4,
-                      maxLength: 50,
-                    ),
-                    ReusableFormDateField(
-                      controller: dateOfBirth,
-                      hint: "Date of birth",
-                    ),
-                    ReusableFormField(
-                      controller: username,
-                      hint: "Username",
-                      minLength: 5,
-                      maxLength: 20,
-                    ),
-                    ReusableFormField(
-                      controller: password,
-                      hint: "Password",
-                      isPassword: true,
-                      minLength: 8,
-                      maxLength: 32,
-                      keyboardType: TextInputType.visiblePassword,
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
+                  ),
+                  Expanded(
+                    child: ReusableButton(
+                      color: Colors.blue,
+                      textColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 32),
+                      onTap: () async {
                         // check if form fields are valid
                         if (_formKey.currentState!.validate()) {
                           // save form fields
@@ -152,12 +181,12 @@ class RegisterViewState extends State<RegisterView> {
                           }
                         }
                       },
-                      child: const Text('Sign up'),
+                      text: 'Sign up',
                     ),
-                  ],
-                ),
-              )),
-        ),
+                  ),
+                ],
+              ),
+            )),
       ),
     );
   }

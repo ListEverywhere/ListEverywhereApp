@@ -108,8 +108,10 @@ class CreateRecipeViewState extends State<CreateRecipeView> {
                       },
                     ),
                     ReusableFormField(
-                        controller: recipeDescription,
-                        hint: 'Recipe Description'),
+                      controller: recipeDescription,
+                      hint: 'Recipe Description',
+                      maxLength: 400,
+                    ),
                     ReusableFormField(
                         controller: cookTime,
                         hint: 'Cook Time (minutes)',

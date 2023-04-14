@@ -48,6 +48,29 @@ class MyRecipesViewState extends State<MyRecipesView> {
     );
   }
 
+  Widget buildListContainer(BuildContext context, Widget child) {
+    return Column(
+      children: [
+        Expanded(
+          flex: 4,
+          child: child,
+        ),
+        Expanded(
+          child: FloatingActionButtonContainer(
+            icon: const Icon(Icons.add),
+            onPressed: () async {
+              // create new recipe
+              await Navigator.pushNamed(context, '/recipes/create')
+                  .then((value) {
+                setState(() {});
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,34 +87,21 @@ class MyRecipesViewState extends State<MyRecipesView> {
             List<RecipeModel> data = snapshot.data!;
             if (data.isNotEmpty) {
               // user has recipes, create list of recipe entries
-              return Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: RecipeListView(
-                      recipes: data,
-                      updateCallback: onUpdate,
-                      deleteCallback: onDelete,
-                    ),
-                  ),
-                  Expanded(
-                      child: FloatingActionButtonContainer(
-                    icon: const Icon(Icons.add),
-                    onPressed: () async {
-                      // create new recipe
-                      await Navigator.pushNamed(context, '/recipes/create')
-                          .then((value) {
-                        setState(() {});
-                      });
-                    },
-                  )),
-                ],
+              return buildListContainer(
+                context,
+                RecipeListView(
+                  recipes: data,
+                  updateCallback: onUpdate,
+                  deleteCallback: onDelete,
+                ),
               );
             } else {
               // user has no recipes
-              return const Center(
-                child: Text('You do not have any recipes.'),
+              return buildListContainer(
+                context,
+                const Center(
+                  child: Text('You do not have any recipes.'),
+                ),
               );
             }
           }

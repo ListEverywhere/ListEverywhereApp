@@ -10,6 +10,8 @@ class TextFieldDialog extends StatefulWidget {
     required this.submitText,
     this.initialText,
     required this.onSubmit,
+    this.maxLength = 64,
+    this.minLength = 1,
   });
 
   final String alertText;
@@ -17,6 +19,8 @@ class TextFieldDialog extends StatefulWidget {
   final String submitText;
   final String? initialText;
   final Function(String) onSubmit;
+  final int maxLength;
+  final int minLength;
 
   @override
   State<StatefulWidget> createState() {
@@ -41,7 +45,11 @@ class TextFieldDialogState extends State<TextFieldDialog> {
       title: Text(widget.alertText),
       content: Form(
         key: _formKey,
-        child: ReusableFormField(controller: formField, hint: widget.formHint),
+        child: ReusableFormField(
+            controller: formField,
+            hint: widget.formHint,
+            maxLength: widget.maxLength,
+            minLength: widget.minLength),
       ),
       actions: [
         SizedBox(

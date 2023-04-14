@@ -117,6 +117,27 @@ class MyListsViewState extends State<MyListsView> {
     );
   }
 
+  Widget buildListContainer(BuildContext context, Widget child) {
+    return Column(
+      children: [
+        Expanded(
+          flex: 4,
+          child: child,
+        ),
+        Expanded(
+          child: FloatingActionButtonContainer(
+            onPressed: () async {
+              // create new list
+              await createNewList(context);
+              setState(() {});
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,43 +169,31 @@ class MyListsViewState extends State<MyListsView> {
             List<ListModel> data = snapshot.data!;
             if (data.isEmpty) {
               // user has no shopping lists
-              return const Center(
-                child: Text('You do not have any Shopping Lists.'),
-              );
+              return buildListContainer(
+                  context,
+                  const Center(
+                    child: Text('You do not have any Shopping Lists.'),
+                  ));
             }
             // build list of shopping lists
-            return Column(
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: ShoppingListsListView(
-                    onUpdate: (list) async {
-                      await showUpdateList(context, list);
-                      setState(() {});
-                    },
-                    onDelete: (id) async {
-                      await deleteList(id);
-                      setState(() {});
-                    },
-                    onTap: (list) {
-                      // display single list page
-                      Navigator.pushNamed(context, '/lists/list',
-                          arguments: list.listId);
-                    },
-                    data: data,
-                  ),
-                ),
-                Expanded(
-                  child: FloatingActionButtonContainer(
-                    onPressed: () async {
-                      // create new list
-                      await createNewList(context);
-                      setState(() {});
-                    },
-                    icon: const Icon(Icons.add),
-                  ),
-                )
-              ],
+            return buildListContainer(
+              context,
+              ShoppingListsListView(
+                onUpdate: (list) async {
+                  await showUpdateList(context, list);
+                  setState(() {});
+                },
+                onDelete: (id) async {
+                  await deleteList(id);
+                  setState(() {});
+                },
+                onTap: (list) {
+                  // display single list page
+                  Navigator.pushNamed(context, '/lists/list',
+                      arguments: list.listId);
+                },
+                data: data,
+              ),
             );
           } else if (snapshot.hasError) {
             print(snapshot.error);

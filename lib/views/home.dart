@@ -26,17 +26,35 @@ class HomeView extends StatelessWidget {
             Expanded(
               flex: 4,
               child: Container(
-                  color: Colors.amber,
+                  color: Colors.blue,
                   margin: const EdgeInsets.all(15.0),
                   child: const Center(
-                    child: Text("Welcome to ListEverywhere!",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 42.0)),
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                              text: 'Welcome to ListEverywhere!\n',
+                              style: TextStyle(
+                                  fontSize: 42.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700)),
+                          TextSpan(
+                            text: 'Your shopping lists reimagined.',
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   )),
             ),
             Expanded(
               child: ReusableButton(
-                color: Colors.amber[200],
+                color: Colors.blue[200],
                 text: "Sign in",
                 onTap: () {
                   // user pressed login button
@@ -47,7 +65,7 @@ class HomeView extends StatelessWidget {
             ),
             Expanded(
               child: ReusableButton(
-                color: Colors.amber[300],
+                color: Colors.blue[300],
                 text: "Sign up for a new account",
                 onTap: () {
                   // user pressed register button

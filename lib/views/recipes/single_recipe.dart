@@ -145,6 +145,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
       context: context,
       builder: (context) {
         return TextFieldDialog(
+          maxLength: 300,
           initialText: original != null ? original.stepDescription : '',
           alertText: alertText,
           formHint: 'Step Description',

@@ -120,6 +120,28 @@ class RecipesService {
     return Future.error(initialData['message'][0]);
   }
 
+  Future<CategoryModel> getCategoryById(int categoryId) async {
+    // get user token
+    String token = await userService.getTokenIfSet();
+
+    var response = await http.get(
+      Uri.parse('$_url/categories/category/$categoryId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      var category = CategoryModel.fromJson(initialData);
+
+      return category;
+    }
+
+    return Future.error(initialData['message'][0]);
+  }
+
   Future<List<RecipeModel>> searchRecipes(SearchModel search) async {
     // create search data
     var searchData = jsonEncode(search);
@@ -369,6 +391,28 @@ class RecipesService {
       return recipes;
     } else if (response.statusCode == 404) {
       return [];
+    }
+
+    return Future.error(initialData['message'][0]);
+  }
+
+  Future publishRecipe(int recipeId, bool isPublished) async {
+    // get user token
+    var token = await userService.getTokenIfSet();
+
+    var response = await http.post(
+      Uri.parse(isPublished
+          ? '$_url/unpublish/$recipeId'
+          : '$_url/publish/$recipeId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    var initialData = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Future.value(1);
     }
 
     return Future.error(initialData['message'][0]);

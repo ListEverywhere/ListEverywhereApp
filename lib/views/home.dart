@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
+import 'package:listeverywhere_app/widgets/fatsecret_badge.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
 
 /// The home page of the application. Displays login and register options.
@@ -72,6 +73,18 @@ class HomeView extends StatelessWidget {
                   Navigator.pushNamed(context, '/register');
                 },
                 padding: const EdgeInsets.all(15.0),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  Text('ListEverywhere 2023'),
+                  FatSecretBadge(),
+                ],
               ),
             ),
           ],

@@ -77,7 +77,7 @@ class CreateRecipeViewState extends State<CreateRecipeView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            widget.recipe != null ? 'Updating recipe' : 'Create a new recipe'),
+            widget.recipe != null ? 'Updating Recipe' : 'Create a new recipe'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(30),
@@ -85,6 +85,12 @@ class CreateRecipeViewState extends State<CreateRecipeView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Wrap(
+              children: const [
+                Text('Enter the recipe information below:',
+                    style: TextStyle(fontSize: 24))
+              ],
+            ),
             Expanded(
               flex: 2,
               child: Form(
@@ -113,6 +119,7 @@ class CreateRecipeViewState extends State<CreateRecipeView> {
                       maxLength: 400,
                     ),
                     ReusableFormField(
+                        onlyNumbers: true,
                         controller: cookTime,
                         hint: 'Cook Time (minutes)',
                         keyboardType: TextInputType.number),

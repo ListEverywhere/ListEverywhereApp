@@ -35,8 +35,9 @@ class RecipeEntry extends StatelessWidget {
           Navigator.pushNamed(context, '/recipes/recipe',
               arguments: RecipeViewModel(
                   recipeId: recipe.recipeId,
-                  edit: enableActions,
-                  listId: listIdForMerge));
+                  edit: false,
+                  listId: listIdForMerge,
+                  canEdit: enableActions));
         },
         child: SizedBox(
           height: 80.0,

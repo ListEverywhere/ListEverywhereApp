@@ -84,7 +84,8 @@ class _LoginViewState extends State<LoginView> {
                           response = await widget.userService
                               .login(username.text, password.text)
                               .then((value) {
-                            Navigator.popAndPushNamed(context, '/lists');
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, '/lists', (route) => false);
                           });
                         } catch (e) {
                           // an error has occurred

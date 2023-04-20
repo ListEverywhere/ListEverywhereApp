@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
+import 'package:listeverywhere_app/widgets/fatsecret_badge.dart';
 import 'package:listeverywhere_app/widgets/lists/list_items_list_view.dart';
 
 class SelectListItemsForMatchView extends StatefulWidget {
@@ -101,6 +102,10 @@ class SelectListItemsForMatchViewState
                 child: const Text('Continue'),
               ),
             ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 4),
+            child: FatSecretBadge(),
           ),
         ],
       ),

@@ -26,6 +26,7 @@ class RecipeStepList extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(4.0),
           child: ListTile(
+            horizontalTitleGap: 4,
             // create number index Text at start of ListTile
             leading: Text(
               '${index + 1}.',

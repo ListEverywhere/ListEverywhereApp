@@ -3,6 +3,7 @@ import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
+import 'package:listeverywhere_app/widgets/fatsecret_badge.dart';
 import 'package:listeverywhere_app/widgets/floating_action_button_container.dart';
 import 'package:listeverywhere_app/widgets/item_dialog.dart';
 import 'package:listeverywhere_app/widgets/lists/list_items_list_view.dart';
@@ -204,6 +205,10 @@ class SingleListViewState extends State<SingleListView> {
             },
             icon: const Icon(Icons.add),
           ),
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 4),
+          child: FatSecretBadge(),
         ),
       ],
     );

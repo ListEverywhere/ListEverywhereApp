@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 /// A text field for a form control
 class ReusableFormField extends StatelessWidget {
-  const ReusableFormField(
-      {super.key,
-      required this.controller,
-      required this.hint,
-      this.isPassword = false,
-      this.minLength = 1,
-      this.maxLength = 64,
-      this.keyboardType = TextInputType.text});
+  const ReusableFormField({
+    super.key,
+    required this.controller,
+    required this.hint,
+    this.isPassword = false,
+    this.minLength = 1,
+    this.maxLength = 64,
+    this.keyboardType = TextInputType.text,
+    this.onlyNumbers = false,
+  });
 
   /// Stores the form field text
   final TextEditingController controller;
@@ -29,9 +32,13 @@ class ReusableFormField extends StatelessWidget {
 
   final TextInputType keyboardType;
 
+  final bool onlyNumbers;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      inputFormatters:
+          onlyNumbers ? [FilteringTextInputFormatter.digitsOnly] : [],
       keyboardType: keyboardType,
       obscureText: isPassword,
       enableSuggestions: !isPassword,

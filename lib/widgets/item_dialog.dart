@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
+import 'package:listeverywhere_app/widgets/fatsecret_badge.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
 
@@ -55,15 +56,19 @@ class ItemDialogState extends State<ItemDialog> {
         return Scaffold(
           backgroundColor: Colors.transparent,
           body: AlertDialog(
-            title: Text(widget.alertText),
+            title: Text(
+              widget.alertText,
+              textAlign: TextAlign.center,
+            ),
             content: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
                   'Enter your item name, then press the search icon',
                   style: TextStyle(fontSize: 12.0),
+                  textAlign: TextAlign.center,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -155,6 +160,7 @@ class ItemDialogState extends State<ItemDialog> {
               ],
             ),
             actions: [
+              if (!isCustom) const FatSecretBadge(),
               SizedBox(
                 width: 100,
                 height: 50,

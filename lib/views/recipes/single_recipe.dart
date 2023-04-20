@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/models/category_model.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/recipes_service.dart';
+import 'package:listeverywhere_app/widgets/fatsecret_badge.dart';
 import 'package:listeverywhere_app/widgets/item_dialog.dart';
+import 'package:listeverywhere_app/widgets/recipes/merge_dialog.dart';
 import 'package:listeverywhere_app/widgets/recipes/recipe_item_list.dart';
 import 'package:listeverywhere_app/widgets/recipes/recipe_step_list.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
@@ -31,10 +34,17 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
 
   late bool edit;
 
+  late bool canEdit;
+
   @override
   void initState() {
     super.initState();
     edit = widget.recipeInit.edit;
+    canEdit = widget.recipeInit.canEdit;
+  }
+
+  Future<CategoryModel> getCategory(int categoryId) async {
+    return await recipesService.getCategoryById(categoryId);
   }
 
   /// Returns a RecipeModel object for the recipe id given
@@ -111,6 +121,19 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     });
   }
 
+  Future publishRecipe(int recipeId, bool isPublished) async {
+    await recipesService.publishRecipe(recipeId, isPublished).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(isPublished
+              ? 'Recipe successfully unpublished.'
+              : 'Recipe successfully published.'),
+        ),
+      );
+      setState(() {});
+    });
+  }
+
   void showRecipeItemDialog(
     BuildContext context,
     RecipeItemModel? original,
@@ -170,56 +193,50 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     );
   }
 
+  Future finishSearchMergeFlow() async {
+    print('Merge with list ${widget.recipeInit.listId}');
+    await listsService
+        .mergeListWithRecipe(
+            widget.recipeInit.listId!, widget.recipeInit.recipeId)
+        .then((value) {
+      // successfully merged recipe with list
+      showDialog(
+        context: context,
+        builder: (context) {
+          return RecipeMergeDialog(parentContext: context, success: true);
+        },
+      );
+    }).onError((error, stackTrace) {
+      // failed to do the recipe and list merge
+      showDialog(
+        context: context,
+        builder: (context) {
+          print(error);
+          return RecipeMergeDialog(parentContext: context, success: true);
+        },
+      );
+    });
+  }
+
+  void mergeWithList() {
+    Navigator.pushNamed(context, '/recipes/list-select-merge',
+        arguments: widget.recipeInit.recipeId);
+  }
+
   Widget? buildMergeButton() {
+    bool fromSearchFlow = widget.recipeInit.listId != null;
+
     return Center(
       child: ReusableButton(
         padding: const EdgeInsets.all(16.0),
         color: Colors.blue,
         textColor: Colors.white,
         onTap: () async {
-          print('Merge with list ${widget.recipeInit.listId}');
-          await listsService
-              .mergeListWithRecipe(
-                  widget.recipeInit.listId!, widget.recipeInit.recipeId)
-              .then((value) {
-            // successfully merged recipe with list
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: const Text('Success'),
-                  content: const Text('Successfully merged list with recipe!'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.popUntil(
-                          context, ModalRoute.withName('/recipes')),
-                      child: const Text('Back to Explore'),
-                    ),
-                  ],
-                );
-              },
-            );
-          }).onError((error, stackTrace) {
-            // failed to do the recipe and list merge
-            showDialog(
-              context: context,
-              builder: (context) {
-                print(error);
-                return AlertDialog(
-                  title: const Text('Error'),
-                  content:
-                      const Text('Failed to merge the recipe with the list.'),
-                  actions: [
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Close'))
-                  ],
-                );
-              },
-            );
-          });
+          if (fromSearchFlow) {
+            await finishSearchMergeFlow();
+          } else {
+            mergeWithList();
+          }
         },
         text: 'Merge with List',
       ),
@@ -240,9 +257,27 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
           if (snapshot.hasData) {
             // data is received
             RecipeModel recipe = snapshot.data!;
+
             // return scrollable view
             return Column(
               children: [
+                if (canEdit)
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Text('Edit'),
+                      Switch(
+                        value: edit,
+                        onChanged: (value) {
+                          setState(() {
+                            edit = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 Expanded(
                   flex: 5,
                   child: SingleChildScrollView(
@@ -252,41 +287,75 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  recipe.recipeName,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                      fontSize: 48,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                const SizedBox(height: 20),
-                                Flexible(
-                                  child: Text(
-                                    recipe.recipeDescription,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                Text.rich(
-                                  TextSpan(
+                          Container(
+                            color: Colors.grey[300],
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      recipe.recipeName,
+                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
-                                        fontSize: 12,
+                                          fontSize: 48,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Flexible(
+                                      child: Text(
+                                        recipe.recipeDescription,
+                                        textAlign: TextAlign.center,
                                       ),
-                                      children: [
-                                        const TextSpan(
-                                            text: 'Cook Time: ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)),
-                                        TextSpan(
-                                            text: '${recipe.cookTime} minutes'),
-                                      ]),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Text.rich(
+                                      TextSpan(
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                          ),
+                                          children: [
+                                            const TextSpan(
+                                                text: 'Cook Time: ',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            TextSpan(
+                                                text:
+                                                    '${recipe.cookTime} minutes'),
+                                          ]),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    FutureBuilder(
+                                      future: getCategory(recipe.category),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          return Text.rich(
+                                            TextSpan(
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                ),
+                                                children: [
+                                                  const TextSpan(
+                                                      text: 'Category: ',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                  TextSpan(
+                                                      text: snapshot
+                                                          .data!.categoryName),
+                                                ]),
+                                          );
+                                        }
+
+                                        return Container();
+                                      },
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -377,11 +446,53 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
                     ),
                   ),
                 ),
-                if (widget.recipeInit.listId != null)
+                if (!canEdit)
                   Expanded(
                       child: Container(
                     child: buildMergeButton(),
                   )),
+                if (canEdit)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text.rich(
+                          TextSpan(
+                              style: const TextStyle(
+                                fontSize: 16,
+                              ),
+                              children: [
+                                const TextSpan(
+                                  text: 'This recipe is currently ',
+                                ),
+                                TextSpan(
+                                    text: recipe.published
+                                        ? 'public.'
+                                        : 'private.',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                              ]),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            await publishRecipe(
+                                recipe.recipeId, recipe.published);
+                          },
+                          child:
+                              Text(recipe.published ? 'Unpublish' : 'Publish'),
+                        ),
+                      ],
+                    ),
+                  ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 12, bottom: 4),
+                  child: FatSecretBadge(),
+                ),
               ],
             );
           } else {

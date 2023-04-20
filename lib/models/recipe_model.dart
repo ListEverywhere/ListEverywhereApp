@@ -112,8 +112,13 @@ class RecipeViewModel {
   int recipeId;
   bool edit;
   int? listId;
+  bool canEdit;
 
-  RecipeViewModel({required this.recipeId, this.edit = true, this.listId});
+  RecipeViewModel(
+      {required this.recipeId,
+      this.edit = true,
+      this.listId,
+      required this.canEdit});
 }
 
 class RecipeMatchModel {

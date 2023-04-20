@@ -92,6 +92,9 @@ class MyApp extends StatelessWidget {
                 listItemIdsInit: ModalRoute.of(context)?.settings.arguments
                     as RecipeMatchModel,
               ),
+          '/recipes/list-select-merge': (context) => SelectListForMatchView(
+                recipeId: ModalRoute.of(context)?.settings.arguments as int,
+              )
         });
   }
 }

@@ -20,6 +20,20 @@ class SelectListItemsForMatchView extends StatefulWidget {
 class SelectListItemsForMatchViewState
     extends State<SelectListItemsForMatchView> {
   int selectedItemCount = 0;
+  late List<ListItemModel> listItems;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.listItemsInit.listItems.isNotEmpty) {
+      listItems = widget.listItemsInit.listItems.map(
+        (e) {
+          e.checked = false;
+          return e;
+        },
+      ).toList();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +62,7 @@ class SelectListItemsForMatchViewState
                   builder: (context) {
                     if (widget.listItemsInit.listItems.isNotEmpty) {
                       return ListItemsListView(
-                        items: widget.listItemsInit.listItems,
+                        items: listItems,
                         enableActions: false,
                         onChecked: (value, item) {
                           print(value);
@@ -75,7 +89,6 @@ class SelectListItemsForMatchViewState
                 child: Center(
                   child: ElevatedButton(
                     style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(primary),
                         maximumSize:
                             MaterialStatePropertyAll<Size>(Size(100, 80))),
                     onPressed: selectedItemCount > 0

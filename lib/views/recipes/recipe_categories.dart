@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/category_model.dart';
 import 'package:listeverywhere_app/services/recipes_service.dart';
 import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
@@ -40,6 +41,7 @@ class RecipeCategoriesViewState extends State<RecipeCategoriesView> {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: CategoryCard(
+                    color: colors[index % colors.length],
                     category: categories[index],
                     onTap: (p0) {
                       print('category id $p0');

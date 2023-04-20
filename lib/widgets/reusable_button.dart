@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/constants.dart';
 
 /// A styled InkWell button with padding
 class ReusableButton extends StatelessWidget {
   const ReusableButton(
       {super.key,
       this.onTap,
-      this.color = Colors.amber,
+      this.color = primary,
       this.padding = const EdgeInsets.all(0),
       this.border = const BorderRadius.all(Radius.circular(15.0)),
       this.text = "",
-      this.textColor = Colors.black});
+      this.textColor = Colors.black,
+      this.fontSize = 12});
 
   /// Function to run after button click
   final Function()? onTap;
@@ -28,6 +30,8 @@ class ReusableButton extends StatelessWidget {
 
   final Color? textColor;
 
+  final double fontSize;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -38,7 +42,9 @@ class ReusableButton extends StatelessWidget {
         //margin: const EdgeInsets.all(15.0),
         child: InkWell(
           onTap: onTap,
-          child: Center(child: Text(text, style: TextStyle(color: textColor))),
+          child: Center(
+              child: Text(text,
+                  style: TextStyle(color: textColor, fontSize: fontSize))),
         ),
       ),
     );

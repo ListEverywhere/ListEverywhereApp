@@ -37,7 +37,7 @@ class ExploreRecipes extends StatelessWidget {
                     onTap: () {
                       Navigator.pushNamed(context, '/recipes/categories');
                     },
-                    color: Colors.amber,
+                    color: const Color(0xFFFED43F),
                     fontColor: Colors.black,
                     cardIcon: FontAwesomeIcons.layerGroup,
                   ),
@@ -46,7 +46,7 @@ class ExploreRecipes extends StatelessWidget {
                     onTap: () {
                       Navigator.pushNamed(context, '/recipes/search');
                     },
-                    color: Colors.green,
+                    color: const Color(0xFF2BB8B3),
                     fontColor: Colors.white,
                     cardIcon: FontAwesomeIcons.magnifyingGlass,
                   ),
@@ -55,7 +55,7 @@ class ExploreRecipes extends StatelessWidget {
                     onTap: () {
                       Navigator.pushNamed(context, '/recipes/list-select');
                     },
-                    color: Colors.deepPurple,
+                    color: const Color(0xFFE151AF),
                     fontColor: Colors.white,
                     cardIcon: FontAwesomeIcons.listCheck,
                   ),

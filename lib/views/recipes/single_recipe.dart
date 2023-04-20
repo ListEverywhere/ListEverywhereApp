@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/category_model.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
@@ -229,8 +230,8 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     return Center(
       child: ReusableButton(
         padding: const EdgeInsets.all(16.0),
-        color: Colors.blue,
         textColor: Colors.white,
+        fontSize: 20,
         onTap: () async {
           if (fromSearchFlow) {
             await finishSearchMergeFlow();
@@ -368,6 +369,10 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
                                       fontWeight: FontWeight.w500)),
                               if (edit)
                                 ElevatedButton(
+                                  style: const ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStatePropertyAll(primary),
+                                  ),
                                   onPressed: () {
                                     print('add recipe item');
                                     showRecipeItemDialog(
@@ -408,6 +413,10 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
                                       fontWeight: FontWeight.w500)),
                               if (edit)
                                 ElevatedButton(
+                                  style: const ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStatePropertyAll(primary),
+                                  ),
                                   onPressed: () {
                                     print('add recipe step');
                                     showRecipeStepDialog(
@@ -479,6 +488,9 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
                           height: 10,
                         ),
                         ElevatedButton(
+                          style: const ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll(primary),
+                          ),
                           onPressed: () async {
                             await publishRecipe(
                                 recipe.recipeId, recipe.published);

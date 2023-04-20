@@ -165,6 +165,8 @@ class ItemDialogState extends State<ItemDialog> {
                 width: 100,
                 height: 50,
                 child: ReusableButton(
+                  textColor: Colors.white,
+                  fontSize: 16,
                   padding: const EdgeInsets.all(4.0),
                   text: 'Cancel',
                   onTap: () {
@@ -177,6 +179,8 @@ class ItemDialogState extends State<ItemDialog> {
                 width: 100,
                 height: 50,
                 child: ReusableButton(
+                  textColor: Colors.white,
+                  fontSize: 16,
                   padding: const EdgeInsets.all(4.0),
                   text: widget.submitText,
                   onTap: () {

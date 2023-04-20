@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 
 /// A single shopping list card with information from [list]
@@ -29,7 +30,7 @@ class ShoppingListEntry extends StatelessWidget {
     return Card(
       clipBehavior: Clip.hardEdge,
       child: InkWell(
-        splashColor: Colors.amber,
+        splashColor: secondary,
         onTap: onTap,
         child: SizedBox(
           height: 80.0,

@@ -69,8 +69,8 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 Expanded(
                   child: ReusableButton(
-                    color: Colors.blue,
                     textColor: Colors.white,
+                    fontSize: 20,
                     padding: const EdgeInsets.symmetric(
                         vertical: 16, horizontal: 32),
                     onTap: () async {

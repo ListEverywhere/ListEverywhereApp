@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
 import 'package:listeverywhere_app/widgets/fatsecret_badge.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
@@ -27,36 +28,46 @@ class HomeView extends StatelessWidget {
             Expanded(
               flex: 4,
               child: Container(
-                  color: Colors.blue,
+                  color: primary,
                   margin: const EdgeInsets.all(15.0),
-                  child: const Center(
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
+                  child: Column(
+                    children: [
+                      Flexible(
+                          flex: 1,
+                          child: Image.asset(
+                            'images/ListEverywhere_Icon_V1_nobg.png',
+                          )),
+                      const Expanded(
+                        child: Text.rich(
                           TextSpan(
-                              text: 'Welcome to ListEverywhere!\n',
-                              style: TextStyle(
-                                  fontSize: 42.0,
+                            children: [
+                              TextSpan(
+                                  text: 'Welcome to ListEverywhere!\n',
+                                  style: TextStyle(
+                                      fontSize: 42.0,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700)),
+                              TextSpan(
+                                text: 'Your shopping lists reimagined.',
+                                style: TextStyle(
+                                  fontSize: 24,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w700)),
-                          TextSpan(
-                            text: 'Your shopping lists reimagined.',
-                            style: TextStyle(
-                              fontSize: 24,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                            ),
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
+                    ],
                   )),
             ),
             Expanded(
               child: ReusableButton(
-                color: Colors.blue[200],
+                color: primaryLight,
                 text: "Sign in",
+                fontSize: 16,
                 onTap: () {
                   // user pressed login button
                   Navigator.pushNamed(context, '/login');
@@ -66,7 +77,8 @@ class HomeView extends StatelessWidget {
             ),
             Expanded(
               child: ReusableButton(
-                color: Colors.blue[300],
+                color: primaryLighter,
+                fontSize: 16,
                 text: "Sign up for a new account",
                 onTap: () {
                   // user pressed register button

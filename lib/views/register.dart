@@ -115,7 +115,7 @@ class RegisterViewState extends State<RegisterView> {
                   ),
                   Expanded(
                     child: ReusableButton(
-                      color: Colors.blue,
+                      fontSize: 20,
                       textColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                           vertical: 16, horizontal: 32),

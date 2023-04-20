@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:listeverywhere_app/constants.dart';
 
 /// A navigation bar for logged-in users to access lists and recipes
 /// Temporarily a stateless widget until navigator is rewritten.
@@ -24,6 +25,7 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      selectedItemColor: primary,
       currentIndex: currentIndex,
       // list of navigation bar items
       items: const [

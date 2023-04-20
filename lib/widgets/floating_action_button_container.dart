@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/constants.dart';
 
 class FloatingActionButtonContainer extends StatelessWidget {
   const FloatingActionButtonContainer({
@@ -17,6 +18,7 @@ class FloatingActionButtonContainer extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(right: 16),
         child: FloatingActionButton(
+          backgroundColor: primary,
           onPressed: onPressed,
           child: icon,
         ),

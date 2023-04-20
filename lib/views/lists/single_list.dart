@@ -7,9 +7,6 @@ import 'package:listeverywhere_app/widgets/fatsecret_badge.dart';
 import 'package:listeverywhere_app/widgets/floating_action_button_container.dart';
 import 'package:listeverywhere_app/widgets/item_dialog.dart';
 import 'package:listeverywhere_app/widgets/lists/list_items_list_view.dart';
-import 'package:listeverywhere_app/widgets/reusable_button.dart';
-import 'package:listeverywhere_app/widgets/reusable_field.dart';
-import 'package:listeverywhere_app/widgets/lists/shopping_list_item_entry.dart';
 
 /// Provides the view for a single shopping list using the [listId]
 class SingleListView extends StatefulWidget {

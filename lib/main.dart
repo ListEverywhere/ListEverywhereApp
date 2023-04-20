@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/category_model.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
@@ -49,8 +50,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'ListEverywhere',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+            primaryColor: primary,
+            appBarTheme: const AppBarTheme(color: primary)),
         initialRoute: '/welcome',
         routes: {
           //'/': (context) => BottomNavBar(),

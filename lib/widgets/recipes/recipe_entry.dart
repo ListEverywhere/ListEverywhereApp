@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
 
 /// A single recipe card with information from [recipe]
@@ -29,7 +30,7 @@ class RecipeEntry extends StatelessWidget {
     return Card(
       clipBehavior: Clip.hardEdge,
       child: InkWell(
-        splashColor: Colors.amber,
+        splashColor: secondary,
         onTap: () {
           // display single recipe
           Navigator.pushNamed(context, '/recipes/recipe',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
@@ -149,7 +150,8 @@ class MyListsViewState extends State<MyListsView> {
             padding: const EdgeInsets.all(4.0),
             child: ElevatedButton(
               style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(Colors.amber)),
+                  backgroundColor: MaterialStatePropertyAll(secondary),
+                  foregroundColor: MaterialStatePropertyAll(Colors.black)),
               onPressed: () {
                 // user clicked logoff, pop all routes until back at welcome screen
                 userService.logoff();

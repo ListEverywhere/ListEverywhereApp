@@ -109,26 +109,33 @@ class ItemCard extends StatelessWidget {
     bool checked = item.checked;
     return Card(
       clipBehavior: Clip.hardEdge,
-      child: SizedBox(
-        height: 80.0,
+      child: Container(
+        constraints: const BoxConstraints(
+          minHeight: 60.0,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Checkbox(
-                    value: checked,
-                    onChanged: (value) {
-                      // user checked/unchecked item
-                      item.checked = value!;
-                      checkedCallback(value, item);
-                    }),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(item.itemName),
-                ),
-              ],
+            Flexible(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Checkbox(
+                      value: checked,
+                      onChanged: (value) {
+                        // user checked/unchecked item
+                        item.checked = value!;
+                        checkedCallback(value, item);
+                      }),
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(item.itemName),
+                    ),
+                  ),
+                ],
+              ),
             ),
             if (edit)
               Row(

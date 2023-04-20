@@ -215,29 +215,31 @@ class SingleListViewState extends State<SingleListView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(listName)),
-        body: FutureBuilder(
-          future: getList(),
-          builder: (context, snapshot) {
-            // check if data is available
-            if (snapshot.hasData) {
-              if (snapshot.data!.listItems!.isEmpty) {
-                // list has no items
+        body: SafeArea(
+          child: FutureBuilder(
+            future: getList(),
+            builder: (context, snapshot) {
+              // check if data is available
+              if (snapshot.hasData) {
+                if (snapshot.data!.listItems!.isEmpty) {
+                  // list has no items
+                  return buildListItemContainer(
+                    context,
+                    const Center(
+                      child: Text('There are no items in this list.'),
+                    ),
+                  );
+                }
+                // data is available and not empty
                 return buildListItemContainer(
                   context,
-                  const Center(
-                    child: Text('There are no items in this list.'),
-                  ),
+                  buildItemList(snapshot.data!),
                 );
               }
-              // data is available and not empty
-              return buildListItemContainer(
-                context,
-                buildItemList(snapshot.data!),
-              );
-            }
-            // data is not ready
-            return const Center(child: CircularProgressIndicator());
-          },
+              // data is not ready
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
         ));
   }
 }

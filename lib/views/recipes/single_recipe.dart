@@ -250,270 +250,275 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
       appBar: AppBar(
         title: const Text('Viewing Recipe'),
       ),
-      body: FutureBuilder(
-        // when getRecipe returns recipe model, build view
-        future: getRecipe(),
-        builder: (context, snapshot) {
-          // check if data is available
-          if (snapshot.hasData) {
-            // data is received
-            RecipeModel recipe = snapshot.data!;
+      body: SafeArea(
+        child: FutureBuilder(
+          // when getRecipe returns recipe model, build view
+          future: getRecipe(),
+          builder: (context, snapshot) {
+            // check if data is available
+            if (snapshot.hasData) {
+              // data is received
+              RecipeModel recipe = snapshot.data!;
 
-            // return scrollable view
-            return Column(
-              children: [
-                if (canEdit)
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Text('Edit'),
-                      Switch(
-                        value: edit,
-                        onChanged: (value) {
-                          setState(() {
-                            edit = value;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                Expanded(
-                  flex: 5,
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            color: Colors.grey[300],
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      recipe.recipeName,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                          fontSize: 48,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    const SizedBox(height: 20),
-                                    Flexible(
-                                      child: Text(
-                                        recipe.recipeDescription,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 20),
-                                    Text.rich(
-                                      TextSpan(
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                          ),
-                                          children: [
-                                            const TextSpan(
-                                                text: 'Cook Time: ',
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            TextSpan(
-                                                text:
-                                                    '${recipe.cookTime} minutes'),
-                                          ]),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    FutureBuilder(
-                                      future: getCategory(recipe.category),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.hasData) {
-                                          return Text.rich(
-                                            TextSpan(
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                ),
-                                                children: [
-                                                  const TextSpan(
-                                                      text: 'Category: ',
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold)),
-                                                  TextSpan(
-                                                      text: snapshot
-                                                          .data!.categoryName),
-                                                ]),
-                                          );
-                                        }
-
-                                        return Container();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Ingredients:',
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w500)),
-                              if (edit)
-                                ElevatedButton(
-                                  style: const ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStatePropertyAll(primary),
-                                  ),
-                                  onPressed: () {
-                                    print('add recipe item');
-                                    showRecipeItemDialog(
-                                        context,
-                                        null,
-                                        addRecipeItem,
-                                        'Add new recipe item',
-                                        'Submit');
-                                  },
-                                  child: const Text('Add Ingredient'),
-                                ),
-                            ],
-                          ),
-                          // build list of recipe items
-                          if (recipe.recipeItems != null)
-                            RecipeItemList(
-                              edit: edit,
-                              items: recipe.recipeItems!,
-                              deleteCallback: deleteRecipeItem,
-                              updateCallback: (item) {
-                                print(
-                                    'updating recipe item ${recipe.recipeId}');
-                                showRecipeItemDialog(
-                                    context,
-                                    item,
-                                    updateRecipeItem,
-                                    'Update recipe item',
-                                    'Update');
-                              },
-                            ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Steps:',
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w500)),
-                              if (edit)
-                                ElevatedButton(
-                                  style: const ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStatePropertyAll(primary),
-                                  ),
-                                  onPressed: () {
-                                    print('add recipe step');
-                                    showRecipeStepDialog(
-                                        context,
-                                        null,
-                                        addRecipeStep,
-                                        'Add recipe step',
-                                        'Submit');
-                                  },
-                                  child: const Text('Add Step'),
-                                ),
-                            ],
-                          ),
-                          // build list of recipe steps
-                          if (recipe.recipeSteps != null)
-                            RecipeStepList(
-                              edit: edit,
-                              steps: recipe.recipeSteps!,
-                              deleteCallback: (id) {
-                                print('deleting recipe step id $id');
-                                deleteRecipeStep(id);
-                              },
-                              updateCallback: (step) {
-                                print(
-                                    'updating recipe step id ${step.recipeStepId}');
-                                showRecipeStepDialog(
-                                    context,
-                                    step,
-                                    updateRecipeStep,
-                                    'Updating recipe step',
-                                    'Update');
-                              },
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                if (!canEdit)
-                  Expanded(
-                      child: Container(
-                    child: buildMergeButton(),
-                  )),
-                if (canEdit)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+              // return scrollable view
+              return Column(
+                children: [
+                  if (canEdit)
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text.rich(
-                          TextSpan(
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
-                              children: [
-                                const TextSpan(
-                                  text: 'This recipe is currently ',
-                                ),
-                                TextSpan(
-                                    text: recipe.published
-                                        ? 'public.'
-                                        : 'private.',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                              ]),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        ElevatedButton(
-                          style: const ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll(primary),
-                          ),
-                          onPressed: () async {
-                            await publishRecipe(
-                                recipe.recipeId, recipe.published);
+                        const Text('Edit'),
+                        Switch(
+                          value: edit,
+                          onChanged: (value) {
+                            setState(() {
+                              edit = value;
+                            });
                           },
-                          child:
-                              Text(recipe.published ? 'Unpublish' : 'Publish'),
                         ),
                       ],
                     ),
+                  Expanded(
+                    flex: 5,
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              color: Colors.grey[300],
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        recipe.recipeName,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                            fontSize: 48,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Flexible(
+                                        child: Text(
+                                          recipe.recipeDescription,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Text.rich(
+                                        TextSpan(
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                            ),
+                                            children: [
+                                              const TextSpan(
+                                                  text: 'Cook Time: ',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              TextSpan(
+                                                  text:
+                                                      '${recipe.cookTime} minutes'),
+                                            ]),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      FutureBuilder(
+                                        future: getCategory(recipe.category),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            return Text.rich(
+                                              TextSpan(
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                  children: [
+                                                    const TextSpan(
+                                                        text: 'Category: ',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    TextSpan(
+                                                        text: snapshot.data!
+                                                            .categoryName),
+                                                  ]),
+                                            );
+                                          }
+
+                                          return Container();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Ingredients:',
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w500)),
+                                if (edit)
+                                  ElevatedButton(
+                                    style: const ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStatePropertyAll(primary),
+                                    ),
+                                    onPressed: () {
+                                      print('add recipe item');
+                                      showRecipeItemDialog(
+                                          context,
+                                          null,
+                                          addRecipeItem,
+                                          'Add new recipe item',
+                                          'Submit');
+                                    },
+                                    child: const Text('Add Ingredient'),
+                                  ),
+                              ],
+                            ),
+                            // build list of recipe items
+                            if (recipe.recipeItems != null)
+                              RecipeItemList(
+                                edit: edit,
+                                items: recipe.recipeItems!,
+                                deleteCallback: deleteRecipeItem,
+                                updateCallback: (item) {
+                                  print(
+                                      'updating recipe item ${recipe.recipeId}');
+                                  showRecipeItemDialog(
+                                      context,
+                                      item,
+                                      updateRecipeItem,
+                                      'Update recipe item',
+                                      'Update');
+                                },
+                              ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Steps:',
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w500)),
+                                if (edit)
+                                  ElevatedButton(
+                                    style: const ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStatePropertyAll(primary),
+                                    ),
+                                    onPressed: () {
+                                      print('add recipe step');
+                                      showRecipeStepDialog(
+                                          context,
+                                          null,
+                                          addRecipeStep,
+                                          'Add recipe step',
+                                          'Submit');
+                                    },
+                                    child: const Text('Add Step'),
+                                  ),
+                              ],
+                            ),
+                            // build list of recipe steps
+                            if (recipe.recipeSteps != null)
+                              RecipeStepList(
+                                edit: edit,
+                                steps: recipe.recipeSteps!,
+                                deleteCallback: (id) {
+                                  print('deleting recipe step id $id');
+                                  deleteRecipeStep(id);
+                                },
+                                updateCallback: (step) {
+                                  print(
+                                      'updating recipe step id ${step.recipeStepId}');
+                                  showRecipeStepDialog(
+                                      context,
+                                      step,
+                                      updateRecipeStep,
+                                      'Updating recipe step',
+                                      'Update');
+                                },
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 12, bottom: 4),
-                  child: FatSecretBadge(),
-                ),
-              ],
-            );
-          } else {
-            // recipe is not loaded yet, show spinner
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+                  if (!canEdit)
+                    Expanded(
+                        child: Container(
+                      child: buildMergeButton(),
+                    )),
+                  if (canEdit)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text.rich(
+                            TextSpan(
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                                children: [
+                                  const TextSpan(
+                                    text: 'This recipe is currently ',
+                                  ),
+                                  TextSpan(
+                                      text: recipe.published
+                                          ? 'public.'
+                                          : 'private.',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                ]),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          ElevatedButton(
+                            style: const ButtonStyle(
+                              backgroundColor:
+                                  MaterialStatePropertyAll(primary),
+                            ),
+                            onPressed: () async {
+                              await publishRecipe(
+                                  recipe.recipeId, recipe.published);
+                            },
+                            child: Text(
+                                recipe.published ? 'Unpublish' : 'Publish'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 12, bottom: 4),
+                    child: FatSecretBadge(),
+                  ),
+                ],
+              );
+            } else {
+              // recipe is not loaded yet, show spinner
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
       ),
     );
   }

@@ -42,89 +42,93 @@ class SelectListForMatchViewState extends State<SelectListForMatchView> {
           title: Text(widget.recipeId != null
               ? 'Merge Recipe with List'
               : 'Recipe Search by List Items')),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Expanded(
-            child: Center(
-                child: Text(
-              'Select a Shopping List',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 36,
-              ),
-            )),
-          ),
-          Expanded(
-            flex: 4,
-            child: FutureBuilder<List<ListModel>>(
-              future: getUserLists(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  var data = snapshot.data!;
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Expanded(
+              child: Center(
+                  child: Text(
+                'Select a Shopping List',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 36,
+                ),
+              )),
+            ),
+            Expanded(
+              flex: 4,
+              child: FutureBuilder<List<ListModel>>(
+                future: getUserLists(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    var data = snapshot.data!;
 
-                  if (data.isNotEmpty) {
-                    return ShoppingListsListView(
-                      onUpdate: (p0) {},
-                      onDelete: (p0) {},
-                      onTap: (p0) async {
-                        print('Selected list ${p0.listId}');
+                    if (data.isNotEmpty) {
+                      return ShoppingListsListView(
+                        onUpdate: (p0) {},
+                        onDelete: (p0) {},
+                        onTap: (p0) async {
+                          print('Selected list ${p0.listId}');
 
-                        if (widget.recipeId != null) {
-                          print(
-                              'merging list with recipe id ${widget.recipeId}');
-                          await listsService
-                              .mergeListWithRecipe(p0.listId, widget.recipeId!)
-                              .then((value) {
-                            // successfully merged recipe with list
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return RecipeMergeDialog(
-                                    parentContext: context, success: true);
+                          if (widget.recipeId != null) {
+                            print(
+                                'merging list with recipe id ${widget.recipeId}');
+                            await listsService
+                                .mergeListWithRecipe(
+                                    p0.listId, widget.recipeId!)
+                                .then((value) {
+                              // successfully merged recipe with list
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return RecipeMergeDialog(
+                                      parentContext: context, success: true);
+                                },
+                              );
+                            }).onError((error, stackTrace) {
+                              // failed to do the recipe and list merge
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  print(error);
+                                  return RecipeMergeDialog(
+                                      parentContext: context, success: true);
+                                },
+                              );
+                            });
+                          } else {
+                            print('moving on with search by list items');
+                            var items = p0.listItems!.map(
+                              (e) {
+                                return e as ListItemModel;
                               },
-                            );
-                          }).onError((error, stackTrace) {
-                            // failed to do the recipe and list merge
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                print(error);
-                                return RecipeMergeDialog(
-                                    parentContext: context, success: true);
-                              },
-                            );
-                          });
-                        } else {
-                          print('moving on with search by list items');
-                          var items = p0.listItems!.map(
-                            (e) {
-                              return e as ListItemModel;
-                            },
-                          ).toList();
-                          Navigator.pushNamed(
-                              context, '/recipes/list-select/item-select',
-                              arguments: ListMatchModel(
-                                listItems: items,
-                                listId: p0.listId,
-                              ));
-                        }
-                      },
-                      data: data,
-                      enableActions: false,
-                    );
+                            ).toList();
+                            Navigator.pushNamed(
+                                context, '/recipes/list-select/item-select',
+                                arguments: ListMatchModel(
+                                  listItems: items,
+                                  listId: p0.listId,
+                                ));
+                          }
+                        },
+                        data: data,
+                        enableActions: false,
+                      );
+                    }
+
+                    return const Center(
+                        child: Text('You do not have any Shopping Lists.'));
                   }
 
-                  return const Center(
-                      child: Text('You do not have any Shopping Lists.'));
-                }
-
-                return const Center(child: CircularProgressIndicator());
-              },
+                  return const Center(child: CircularProgressIndicator());
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

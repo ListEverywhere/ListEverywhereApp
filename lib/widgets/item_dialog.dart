@@ -117,6 +117,7 @@ class ItemDialogState extends State<ItemDialog> {
                 // if custom item is chosen, do not show
                 if (!isCustom)
                   DropdownButton<ItemModel>(
+                    isExpanded: true,
                     value: newItem,
                     // map items to a list of DropdownMenuItems
                     items: items
@@ -157,10 +158,10 @@ class ItemDialogState extends State<ItemDialog> {
                       : '',
                   style: const TextStyle(fontSize: 12.0),
                 ),
+                if (!isCustom) const FatSecretBadge(),
               ],
             ),
             actions: [
-              if (!isCustom) const FatSecretBadge(),
               SizedBox(
                 width: 100,
                 height: 50,

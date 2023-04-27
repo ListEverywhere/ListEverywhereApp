@@ -84,12 +84,24 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
         Navigator.pop(context);
         setState(() {});
       },
-    );
+    ).onError((error, stackTrace) {
+      // close the dialog, error
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to add item.'),
+        backgroundColor: errorColor,
+      ));
+    });
   }
 
   Future deleteRecipeItem(int recipeItemId) async {
     await recipesService.deleteRecipeItem(recipeItemId).then((value) {
       setState(() {});
+    }).onError((error, stackTrace) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to delete item.'),
+        backgroundColor: errorColor,
+      ));
     });
   }
 
@@ -99,19 +111,38 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
         Navigator.pop(context);
         setState(() {});
       },
-    );
+    ).onError((error, stackTrace) {
+      // close the dialog, error
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to update item.'),
+        backgroundColor: errorColor,
+      ));
+    });
   }
 
   Future addRecipeStep(RecipeStepModel step) async {
     await recipesService.addRecipeStep(step).then((value) {
       Navigator.pop(context);
       setState(() {});
+    }).onError((error, stackTrace) {
+      // close the dialog, error
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to add step.'),
+        backgroundColor: errorColor,
+      ));
     });
   }
 
   Future deleteRecipeStep(int recipeStepId) async {
     await recipesService.deleteRecipeStep(recipeStepId).then((value) {
       setState(() {});
+    }).onError((error, stackTrace) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to delete step.'),
+        backgroundColor: errorColor,
+      ));
     });
   }
 
@@ -119,6 +150,13 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     await recipesService.updateRecipeStep(updated).then((value) {
       Navigator.pop(context);
       setState(() {});
+    }).onError((error, stackTrace) {
+      // close the dialog, error
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to update step.'),
+        backgroundColor: errorColor,
+      ));
     });
   }
 
@@ -132,6 +170,12 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
         ),
       );
       setState(() {});
+    }).onError((error, stackTrace) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content:
+            Text('Failed to ${isPublished ? 'unpublish' : 'publish'} recipe.'),
+        backgroundColor: errorColor,
+      ));
     });
   }
 
@@ -213,7 +257,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
         context: context,
         builder: (context) {
           print(error);
-          return RecipeMergeDialog(parentContext: context, success: true);
+          return RecipeMergeDialog(parentContext: context, success: false);
         },
       );
     });

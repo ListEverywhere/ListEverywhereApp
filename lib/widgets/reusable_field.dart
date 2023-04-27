@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ class ReusableFormField extends StatelessWidget {
     this.maxLength = 64,
     this.keyboardType = TextInputType.text,
     this.onlyNumbers = false,
+    this.isEmail = false,
   });
 
   /// Stores the form field text
@@ -34,6 +36,8 @@ class ReusableFormField extends StatelessWidget {
 
   final bool onlyNumbers;
 
+  final bool isEmail;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -51,6 +55,8 @@ class ReusableFormField extends StatelessWidget {
           return "$hint cannot be blank.";
         } else if (value.length < minLength || value.length > maxLength) {
           return "$hint must be between $minLength to $maxLength characters.";
+        } else if (isEmail && !EmailValidator.validate(value)) {
+          return '$hint is not a valid email address.';
         }
         return null;
       },

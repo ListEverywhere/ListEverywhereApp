@@ -38,7 +38,11 @@ class SearchRecipesViewState extends State<SearchRecipesView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ReusableFormField(controller: search, hint: 'Recipe name'),
+                  ReusableFormField(
+                    controller: search,
+                    hint: 'Recipe name',
+                    minLength: 3,
+                  ),
                   DropdownButton<String>(
                     value: searchType,
                     items: searchTypes

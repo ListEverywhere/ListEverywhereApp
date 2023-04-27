@@ -24,3 +24,5 @@ const colors = [
   Color(0xFF104911),
   Color(0xFFE151AF),
 ];
+
+const errorColor = Color.fromRGBO(239, 83, 80, 1);

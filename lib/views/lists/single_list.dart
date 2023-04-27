@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
@@ -31,18 +32,35 @@ class SingleListViewState extends State<SingleListView> {
   /// Name of the list
   String listName = '';
 
+  /// List object
+  ListModel? list;
+
   /// Updates the [item] checked property using [value]
   Future onChecked(bool? value, ItemModel item) async {
     print('updating item checked state');
     // update item using lists service
     await listsService.updateItem(item, false);
+
+    if (item.checked) {
+      // move item to end of list
+      item.position = list!.listItems!.length - 1;
+
+      await listsService.updateItem(item, true);
+
+      setState(() {});
+    }
   }
 
   /// Deletes the [item] from the server
   Future onDelete(ItemModel item) async {
     print('deleting item in single list.');
     // delete item using lists service
-    await listsService.deleteItem(item);
+    await listsService.deleteItem(item).onError((error, stackTrace) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to delete item.'),
+        backgroundColor: errorColor,
+      ));
+    });
     setState(() {});
   }
 
@@ -54,6 +72,10 @@ class SingleListViewState extends State<SingleListView> {
 
     // set the list name
     listName = list.listName;
+
+    // set list
+    this.list = list;
+
     return list;
   }
 
@@ -86,7 +108,15 @@ class SingleListViewState extends State<SingleListView> {
         print(value);
         // close the dialog
         Navigator.pop(context);
+      }).onError((error, stackTrace) {
+        // close the dialog, error
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Failed to add item.'),
+          backgroundColor: errorColor,
+        ));
       });
+      ;
     }
   }
 
@@ -97,6 +127,13 @@ class SingleListViewState extends State<SingleListView> {
     await listsService.updateItem(item!, false).then((value) {
       // close the dialog
       Navigator.pop(context);
+    }).onError((error, stackTrace) {
+      // close the dialog, error
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to update item.'),
+        backgroundColor: errorColor,
+      ));
     });
   }
 

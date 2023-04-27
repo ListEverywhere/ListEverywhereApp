@@ -83,6 +83,7 @@ class RegisterViewState extends State<RegisterView> {
                             hint: "Email Address",
                             minLength: 4,
                             maxLength: 50,
+                            isEmail: true,
                           ),
                           ReusableFormDateField(
                             controller: dateOfBirth,

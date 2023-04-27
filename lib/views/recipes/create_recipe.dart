@@ -182,12 +182,18 @@ class CreateRecipeViewState extends State<CreateRecipeView> {
                         }
                       } catch (e) {
                         // an error has occurred
-                        response = e.toString();
                         // display dialog with error
                         showDialog(
                           context: context,
-                          builder: (ctxt) =>
-                              AlertDialog(content: Text(response)),
+                          builder: (ctxt) => AlertDialog(
+                            actions: [
+                              TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Close'))
+                            ],
+                            content: const Text(
+                                'Failed to create or update the recipe.'),
+                          ),
                         );
                       }
                     }

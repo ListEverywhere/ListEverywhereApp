@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/services/recipes_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
@@ -36,7 +37,12 @@ class MyRecipesViewState extends State<MyRecipesView> {
   }
 
   Future onDelete(int recipeId) async {
-    await recipesService.deleteRecipe(recipeId);
+    await recipesService.deleteRecipe(recipeId).onError((error, stackTrace) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to delete recipe.'),
+        backgroundColor: errorColor,
+      ));
+    });
     setState(() {});
   }
 

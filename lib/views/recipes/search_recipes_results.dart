@@ -49,6 +49,14 @@ class SearchRecipesResultsViewState extends State<SearchRecipesResultsView> {
             }
           }
 
+          // if error, show error screen
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text(
+                  'An error has occured while trying to search.\nPlease try again later.'),
+            );
+          }
+
           // if no data, show loading indicator
           return const Center(
             child: CircularProgressIndicator(),

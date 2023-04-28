@@ -16,7 +16,9 @@ class LoginView extends StatefulWidget {
   }
 }
 
+/// State for the login view
 class _LoginViewState extends State<LoginView> {
+  /// Form Key
   final _formKey = GlobalKey<FormState>();
 
   /// Stores the username field text

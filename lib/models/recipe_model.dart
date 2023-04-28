@@ -108,10 +108,18 @@ class RecipeStepModel {
   }
 }
 
+/// Holds necessary parameters for single recipe view
 class RecipeViewModel {
+  /// ID number of the recipe
   int recipeId;
+
+  /// Turns on edit mode
   bool edit;
+
+  /// List ID of the list to match the recipe with (optional)
   int? listId;
+
+  /// If editing is allowed
   bool canEdit;
 
   RecipeViewModel(
@@ -121,6 +129,7 @@ class RecipeViewModel {
       required this.canEdit});
 }
 
+/// Holds required parameters for matching list to recipe
 class RecipeMatchModel {
   List<int> listItemIds;
   int listId;

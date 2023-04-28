@@ -6,7 +6,7 @@ import 'package:listeverywhere_app/constants.dart';
 /// Temporarily a stateless widget until navigator is rewritten.
 class BottomNavBar extends StatelessWidget {
   // Selected navigation item
-  int currentIndex;
+  final int currentIndex;
   // Pages to navigate to
   final pages = [
     '/lists',
@@ -14,7 +14,7 @@ class BottomNavBar extends StatelessWidget {
     '/recipes',
   ];
   // context of parent view
-  BuildContext parentContext;
+  final BuildContext parentContext;
 
   BottomNavBar({
     super.key,

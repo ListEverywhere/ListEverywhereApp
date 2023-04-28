@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/category_model.dart';
 
+/// Displays a recipe category card
 class CategoryCard extends StatelessWidget {
+  /// Recipe category
   final CategoryModel category;
+
+  /// Card color
   final Color color;
+
+  /// Callback for tapping
   final Function(int) onTap;
 
   const CategoryCard({

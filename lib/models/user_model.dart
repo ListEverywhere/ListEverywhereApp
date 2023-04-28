@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// A single User object.
 class UserModel {
   /// ID number of the user

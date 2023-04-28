@@ -32,10 +32,13 @@ class ReusableFormField extends StatelessWidget {
   /// Maximum field length
   final int maxLength;
 
+  /// Type of keyboard to use for input
   final TextInputType keyboardType;
 
+  /// If enabled, only allows numerical input
   final bool onlyNumbers;
 
+  /// Enables email validator
   final bool isEmail;
 
   @override
@@ -75,6 +78,7 @@ class ReusableFormDateField extends StatelessWidget {
   /// Stores the date text
   final TextEditingController controller;
 
+  /// Minimum age for the date field
   final int minAge;
 
   /// Text displayed when field is blank

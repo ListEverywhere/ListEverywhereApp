@@ -26,15 +26,16 @@ class SingleRecipeView extends StatefulWidget {
   }
 }
 
+/// State for the single recipe view
 class SingleRecipeViewState extends State<SingleRecipeView> {
-  /// instance of RecipesService
+  /// instance of [RecipesService]
   final recipesService = RecipesService();
 
-  /// instance of ListsService
+  /// instance of [ListsService]
   final listsService = ListsService();
-
+  // Toggle for edit mode
   late bool edit;
-
+  // Enables editing actions
   late bool canEdit;
 
   @override
@@ -44,6 +45,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     canEdit = widget.recipeInit.canEdit;
   }
 
+  /// Returns the category information
   Future<CategoryModel> getCategory(int categoryId) async {
     return await recipesService.getCategoryById(categoryId);
   }
@@ -78,6 +80,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     );
   }
 
+  /// Adds a new recipe item
   Future addRecipeItem(RecipeItemModel item) async {
     await recipesService.addRecipeItem(item).then(
       (value) {
@@ -94,6 +97,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     });
   }
 
+  /// Deletes a recipe item given the [recipeItemId]
   Future deleteRecipeItem(int recipeItemId) async {
     await recipesService.deleteRecipeItem(recipeItemId).then((value) {
       setState(() {});
@@ -105,6 +109,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     });
   }
 
+  /// Updates a recipe item given the [item]
   Future updateRecipeItem(RecipeItemModel item) async {
     await recipesService.updateRecipeItem(item).then(
       (value) {
@@ -121,6 +126,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     });
   }
 
+  /// Add a recipe step
   Future addRecipeStep(RecipeStepModel step) async {
     await recipesService.addRecipeStep(step).then((value) {
       Navigator.pop(context);
@@ -135,6 +141,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     });
   }
 
+  /// Delete recipe step given the [recipeStepId]
   Future deleteRecipeStep(int recipeStepId) async {
     await recipesService.deleteRecipeStep(recipeStepId).then((value) {
       setState(() {});
@@ -146,6 +153,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     });
   }
 
+  /// Update the recipe step given [updated]
   Future updateRecipeStep(RecipeStepModel updated) async {
     await recipesService.updateRecipeStep(updated).then((value) {
       Navigator.pop(context);
@@ -160,6 +168,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     });
   }
 
+  /// Publish or unpublish the recipe given [recipeId] and the status [isPublished]
   Future publishRecipe(int recipeId, bool isPublished) async {
     await recipesService.publishRecipe(recipeId, isPublished).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -179,6 +188,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     });
   }
 
+  /// Displays dialog for adding/updating recipe items
   void showRecipeItemDialog(
     BuildContext context,
     RecipeItemModel? original,
@@ -202,6 +212,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     );
   }
 
+  /// Displays dialog for adding/updating recipe steps
   void showRecipeStepDialog(
     BuildContext context,
     RecipeStepModel? original,
@@ -220,10 +231,12 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
           submitText: submitText,
           onSubmit: (stepDescription) {
             if (original != null) {
+              // updating recipe step
               original.stepDescription = stepDescription;
 
               onSubmit(original);
             } else {
+              // create recipe step
               var step = RecipeStepModel(
                 recipeStepId: -1,
                 stepDescription: stepDescription,
@@ -238,6 +251,7 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     );
   }
 
+  /// Merges recipe items with list, executed on last screen of recipe match
   Future finishSearchMergeFlow() async {
     print('Merge with list ${widget.recipeInit.listId}');
     await listsService
@@ -263,12 +277,15 @@ class SingleRecipeViewState extends State<SingleRecipeView> {
     });
   }
 
+  /// Executes when user opens recipe and clicks 'Merge with List'
   void mergeWithList() {
     Navigator.pushNamed(context, '/recipes/list-select-merge',
         arguments: widget.recipeInit.recipeId);
   }
 
+  /// Builds the button at the bottom based on widget arguments
   Widget? buildMergeButton() {
+    // If list id is set, user is on this page from recipe match
     bool fromSearchFlow = widget.recipeInit.listId != null;
 
     return Center(

@@ -3,9 +3,10 @@ import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/services/recipes_service.dart';
 import 'package:listeverywhere_app/widgets/recipes/recipes_list_view.dart';
 
+/// Displays a list of recipes for recipe matching
 class SelectRecipeForMatchView extends StatefulWidget {
   const SelectRecipeForMatchView({super.key, required this.listItemIdsInit});
-
+  // Required parameters for view
   final RecipeMatchModel listItemIdsInit;
 
   @override
@@ -14,9 +15,12 @@ class SelectRecipeForMatchView extends StatefulWidget {
   }
 }
 
+/// Staet for the select recipe for match view
 class SelectRecipeForMatchViewState extends State<SelectRecipeForMatchView> {
+  /// Instance of [RecipesService]
   RecipesService recipesService = RecipesService();
 
+  /// Returns a list of recipes with the matching list items
   Future<List<RecipeModel>> getRecipes() async {
     var recipes = await recipesService
         .matchListItemsToRecipes(widget.listItemIdsInit.listItemIds);
@@ -50,9 +54,11 @@ class SelectRecipeForMatchViewState extends State<SelectRecipeForMatchView> {
                 future: getRecipes(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    // recipes were returned
                     var data = snapshot.data!;
 
                     if (data.isNotEmpty) {
+                      // recipes found
                       print(widget.listItemIdsInit.listId);
                       return RecipeListView(
                         recipes: data,
@@ -63,6 +69,7 @@ class SelectRecipeForMatchViewState extends State<SelectRecipeForMatchView> {
                       );
                     }
 
+                    // no matching recipes
                     return const Center(
                       child: Text(
                           'No recipes found containing the selected items.'),

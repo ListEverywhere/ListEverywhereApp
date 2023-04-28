@@ -17,7 +17,9 @@ class RegisterView extends StatefulWidget {
   }
 }
 
+/// State for register view
 class RegisterViewState extends State<RegisterView> {
+  /// Form Key
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -104,6 +106,7 @@ class RegisterViewState extends State<RegisterView> {
                             keyboardType: TextInputType.visiblePassword,
                           ),
                         ]
+                            // add padding to each form field
                             .map((e) => Padding(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 8,

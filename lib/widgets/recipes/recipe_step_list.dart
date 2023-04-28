@@ -11,9 +11,16 @@ class RecipeStepList extends StatelessWidget {
     this.edit = true,
   });
 
+  /// List of recipe steps
   final List<RecipeStepModel> steps;
+
+  /// Callback for deleting
   final Function(int) deleteCallback;
+
+  /// Callback for updating
   final Function(RecipeStepModel) updateCallback;
+
+  /// Enable editing
   final bool edit;
 
   @override

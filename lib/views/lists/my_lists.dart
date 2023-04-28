@@ -6,9 +6,6 @@ import 'package:listeverywhere_app/services/user_service.dart';
 import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
 import 'package:listeverywhere_app/widgets/floating_action_button_container.dart';
 import 'package:listeverywhere_app/widgets/lists/shopping_lists_list_view.dart';
-import 'package:listeverywhere_app/widgets/reusable_button.dart';
-import 'package:listeverywhere_app/widgets/reusable_field.dart';
-import 'package:listeverywhere_app/widgets/lists/shopping_list_entry.dart';
 import 'package:listeverywhere_app/widgets/text_field_dialog.dart';
 
 /// Displays a list of a user's Shopping Lists
@@ -21,6 +18,7 @@ class MyListsView extends StatefulWidget {
   }
 }
 
+/// State for the user's shopping lists view
 class MyListsViewState extends State<MyListsView> {
   /// Instance of [UserService]
   final userService = UserService();
@@ -118,6 +116,7 @@ class MyListsViewState extends State<MyListsView> {
     );
   }
 
+  /// builds layout with child and floating action button at bottom
   Widget buildListContainer(BuildContext context, Widget child) {
     return Column(
       children: [

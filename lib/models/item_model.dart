@@ -147,8 +147,12 @@ class RecipeItemModel extends ItemModel {
   }
 }
 
+/// Holds required parameters for matching list items to recipes
 class MatchListItemModel {
+  /// ID number of the list item entry
   int listItemId;
+
+  /// Item ID
   int itemId;
 
   MatchListItemModel({

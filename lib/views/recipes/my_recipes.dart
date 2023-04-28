@@ -18,6 +18,7 @@ class MyRecipesView extends StatefulWidget {
   }
 }
 
+/// State for the user recipes view
 class MyRecipesViewState extends State<MyRecipesView> {
   /// Instance of [UserService]
   final userService = UserService();
@@ -36,8 +37,11 @@ class MyRecipesViewState extends State<MyRecipesView> {
     return recipes;
   }
 
+  /// Callback for deleting a recipe
   Future onDelete(int recipeId) async {
+    // send delete request
     await recipesService.deleteRecipe(recipeId).onError((error, stackTrace) {
+      // failed to delete
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Failed to delete recipe.'),
         backgroundColor: errorColor,
@@ -46,6 +50,7 @@ class MyRecipesViewState extends State<MyRecipesView> {
     setState(() {});
   }
 
+  /// Callback for updating recipe
   Future onUpdate(RecipeModel recipe) async {
     await Navigator.pushNamed(context, '/recipes/edit', arguments: recipe).then(
       (value) {
@@ -54,6 +59,7 @@ class MyRecipesViewState extends State<MyRecipesView> {
     );
   }
 
+  /// Builds view with child and floating action button on bottom
   Widget buildListContainer(BuildContext context, Widget child) {
     return Column(
       children: [

@@ -11,9 +11,16 @@ class RecipeItemList extends StatelessWidget {
     this.edit = true,
   });
 
+  /// List of recipe items
   final List<RecipeItemModel> items;
+
+  /// Callback for deleting
   final Function(int) deleteCallback;
+
+  /// Callback for editing
   final Function(RecipeItemModel) updateCallback;
+
+  /// Enable editing
   final bool edit;
 
   @override

@@ -19,10 +19,13 @@ class RecipeEntry extends StatelessWidget {
   /// If edit/delete actions should be shown
   final bool enableActions;
 
+  /// Callback for deleting
   final Function(int) deleteCallback;
 
+  /// Callback for updating
   final Function(RecipeModel) updateCallback;
 
+  /// If set, user is merging recipe with list
   final int? listIdForMerge;
 
   @override

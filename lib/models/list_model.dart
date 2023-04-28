@@ -60,8 +60,12 @@ class ListModel {
   }
 }
 
+/// Holds required parameters for list to recipe match
 class ListMatchModel {
+  /// List of List Items
   List<ListItemModel> listItems;
+
+  /// ID number of the shopping list
   int listId;
 
   ListMatchModel({required this.listItems, required this.listId});

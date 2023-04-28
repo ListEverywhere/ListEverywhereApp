@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:listeverywhere_app/services/lists_service.dart';
 
+/// Creates the status dialog for merging recipe with list
 class RecipeMergeDialog extends StatelessWidget {
   const RecipeMergeDialog({
     super.key,
@@ -8,7 +8,10 @@ class RecipeMergeDialog extends StatelessWidget {
     required this.success,
   });
 
+  /// Parent context
   final BuildContext parentContext;
+
+  /// If the merge was successful
   final bool success;
 
   @override

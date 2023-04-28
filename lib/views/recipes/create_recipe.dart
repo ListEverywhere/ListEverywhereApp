@@ -6,12 +6,14 @@ import 'package:listeverywhere_app/services/recipes_service.dart';
 import 'package:listeverywhere_app/services/user_service.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
 
+/// Displays the form for creating or updating a recipe
 class CreateRecipeView extends StatefulWidget {
   const CreateRecipeView({
     super.key,
     this.recipe,
   });
 
+  /// RecipeModel to update. Leave null for create recipe
   final RecipeModel? recipe;
 
   @override
@@ -20,22 +22,35 @@ class CreateRecipeView extends StatefulWidget {
   }
 }
 
+/// State for the create recipe view
 class CreateRecipeViewState extends State<CreateRecipeView> {
+  /// Instance of [RecipesService]
   RecipesService recipesService = RecipesService();
+
+  /// Instance of [UserService]
   UserService userService = UserService();
 
+  /// Recipe Name
   TextEditingController recipeName = TextEditingController();
+
+  /// Recipe Description
   TextEditingController recipeDescription = TextEditingController();
+
+  /// Recipe Cook Time
   TextEditingController cookTime = TextEditingController();
 
+  /// Form Key
   final _formKey = GlobalKey<FormState>();
 
+  /// Selected recipe category
   CategoryModel? selectedCategory;
 
   @override
   void initState() {
     super.initState();
     if (widget.recipe != null) {
+      // recipe is not null, display update screen
+      // set fields with values from recipe
       selectedCategory = CategoryModel(categoryId: widget.recipe!.category);
       recipeName.text = widget.recipe!.recipeName;
       recipeDescription.text = widget.recipe!.recipeDescription;
@@ -43,11 +58,13 @@ class CreateRecipeViewState extends State<CreateRecipeView> {
     }
   }
 
+  /// Returns a list of recipe categories
   Future<List<CategoryModel>> getCategories() async {
     var categories = await recipesService.getCategories();
     return categories;
   }
 
+  /// Builds the recipe category selector dropdown
   Widget buildCategoryDropdown(List<CategoryModel> categories) {
     return DropdownButtonFormField<CategoryModel>(
       value: selectedCategory,
@@ -59,12 +76,14 @@ class CreateRecipeViewState extends State<CreateRecipeView> {
         );
       }).toList(),
       validator: (value) {
+        // checks if a category is selected
         if (value == null) {
           return 'Recipe Category is required';
         }
         return null;
       },
       onChanged: (value) {
+        // update selected category
         setState(() {
           selectedCategory = value;
         });
@@ -104,11 +123,14 @@ class CreateRecipeViewState extends State<CreateRecipeView> {
                     FutureBuilder(
                       future: getCategories(),
                       builder: (context, snapshot) {
+                        // build category dropdown
                         if (snapshot.hasData) {
+                          // categories are found
                           var data = snapshot.data!;
 
                           return buildCategoryDropdown(data);
                         } else {
+                          // display empty dropdown until categories are found
                           return buildCategoryDropdown([]);
                         }
                       },

@@ -22,6 +22,7 @@ class SingleListView extends StatefulWidget {
   }
 }
 
+/// State for single shopping list view
 class SingleListViewState extends State<SingleListView> {
   /// Instance of [UserService]
   final userService = UserService();
@@ -64,7 +65,7 @@ class SingleListViewState extends State<SingleListView> {
     setState(() {});
   }
 
-  /// Returns a shopping list object with the class variable [listId]
+  /// Returns a shopping list object using the listId from the widget
   Future<ListModel> getList() async {
     // get list from lists service
     var list = await listsService.getListById(widget.listId);
@@ -221,6 +222,7 @@ class SingleListViewState extends State<SingleListView> {
     }
   }
 
+  /// builds view with child and floating action button at bottom
   Widget buildListItemContainer(BuildContext context, Widget child) {
     return Column(
       children: [

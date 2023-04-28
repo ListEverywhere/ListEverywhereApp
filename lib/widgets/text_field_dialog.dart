@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
 
+/// Creates a dialog with a single text field
 class TextFieldDialog extends StatefulWidget {
   const TextFieldDialog({
     super.key,
@@ -14,12 +15,25 @@ class TextFieldDialog extends StatefulWidget {
     this.minLength = 1,
   });
 
+  /// Dialog text
   final String alertText;
+
+  /// Form hint
   final String formHint;
+
+  /// Dialog submit button text
   final String submitText;
+
+  /// Initial form field text
   final String? initialText;
+
+  /// Callback for submitting
   final Function(String) onSubmit;
+
+  /// Minimum text length
   final int maxLength;
+
+  /// Maximum text length
   final int minLength;
 
   @override
@@ -29,13 +43,16 @@ class TextFieldDialog extends StatefulWidget {
 }
 
 class TextFieldDialogState extends State<TextFieldDialog> {
+  /// Text field
   TextEditingController formField = TextEditingController();
 
+  /// Form key
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
+    // initialize form field text
     formField.text = widget.initialText ?? '';
   }
 

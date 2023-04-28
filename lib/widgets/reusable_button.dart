@@ -28,8 +28,10 @@ class ReusableButton extends StatelessWidget {
   /// Button text
   final String text;
 
+  /// Button text color
   final Color? textColor;
 
+  /// Button text size
   final double fontSize;
 
   @override

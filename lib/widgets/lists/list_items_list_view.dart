@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/widgets/lists/shopping_list_item_entry.dart';
 
+/// Creates a list view of items
 class ListItemsListView extends StatelessWidget {
   const ListItemsListView(
       {super.key,
@@ -12,16 +13,22 @@ class ListItemsListView extends StatelessWidget {
       required this.onReorder,
       this.enableActions = true});
 
+  /// Callback for item checked
   final Function(bool?, ItemModel) onChecked;
 
+  /// Callback for deleting
   final Function(ItemModel) onDelete;
 
+  /// Callback for updating
   final Function(ItemModel) onUpdate;
 
+  /// Callback for moving item
   final Function(int, ItemModel) onReorder;
 
+  /// List of items
   final List<ItemModel> items;
 
+  /// Enable editing
   final bool enableActions;
 
   @override

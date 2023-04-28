@@ -4,6 +4,7 @@ import 'package:listeverywhere_app/models/search_model.dart';
 import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
 
+/// Displays the search page for searching recipes by name
 class SearchRecipesView extends StatefulWidget {
   const SearchRecipesView({super.key});
 
@@ -13,9 +14,15 @@ class SearchRecipesView extends StatefulWidget {
   }
 }
 
+/// State for the search recipes view
 class SearchRecipesViewState extends State<SearchRecipesView> {
+  /// Form Key
   final _formKey = GlobalKey<FormState>();
+
+  /// Search term
   TextEditingController search = TextEditingController();
+
+  /// Currently selected search type
   String searchType = searchTypes[0];
 
   @override
@@ -54,6 +61,7 @@ class SearchRecipesViewState extends State<SearchRecipesView> {
                         .toList(),
                     onChanged: (value) {
                       setState(() {
+                        // update dropdown with new value
                         searchType = value!;
                       });
                     },
@@ -61,10 +69,13 @@ class SearchRecipesViewState extends State<SearchRecipesView> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
+                      // validate form
                       if (_formKey.currentState!.validate()) {
+                        // form is valid
                         _formKey.currentState?.save();
                         print(
                             'Searching for ${search.text} with type $searchType');
+                        // create search model with information
                         SearchModel searchModel = SearchModel(
                           search: search.text,
                           searchType: searchType,

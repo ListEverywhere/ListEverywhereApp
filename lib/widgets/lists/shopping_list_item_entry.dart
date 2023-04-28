@@ -3,7 +3,7 @@ import 'package:listeverywhere_app/models/item_model.dart';
 
 /// A single shopping list item entry using information from [item]
 class ShoppingListItemEntry extends StatefulWidget {
-  ShoppingListItemEntry({
+  const ShoppingListItemEntry({
     super.key,
     required this.item,
     required this.checkedCallback,
@@ -13,7 +13,7 @@ class ShoppingListItemEntry extends StatefulWidget {
   });
 
   /// Item object
-  ItemModel item;
+  final ItemModel item;
 
   /// Callback function for when item is checked
   final Function(bool?, ItemModel) checkedCallback;
@@ -24,6 +24,7 @@ class ShoppingListItemEntry extends StatefulWidget {
   /// Callback function for when item is updated
   final Function(ItemModel) updateCallback;
 
+  /// Enable editing
   final bool enableActions;
 
   @override
@@ -32,6 +33,7 @@ class ShoppingListItemEntry extends StatefulWidget {
   }
 }
 
+/// State for shopping list item entry
 class ShoppingListItemEntryState extends State<ShoppingListItemEntry> {
   /// Item object
   late ItemModel item;

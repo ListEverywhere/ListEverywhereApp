@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/services/lists_service.dart';
 import 'package:listeverywhere_app/widgets/fatsecret_badge.dart';
 import 'package:listeverywhere_app/widgets/reusable_button.dart';
 import 'package:listeverywhere_app/widgets/reusable_field.dart';
 
+/// Creates an item-picker dialog.
 class ItemDialog extends StatefulWidget {
+  /// Dialog text
   final String alertText;
+
+  /// Dialog submit button text
   final String submitText;
+
+  /// Parent context
   final BuildContext parentContext;
+
+  /// Instance of [ListsService] for item picker
   final ListsService? listsService;
+
+  /// If updating, set value as item to be updated
   final ItemModel? originalItem;
+
+  /// Callback for submitting
   final Function(ItemModel) onSubmit;
+
+  /// Hides the checkbox to switch between picker and custom
   final bool hideCheckbox;
+
+  /// Is the item a custom item
   final bool isCustom;
 
   const ItemDialog({
@@ -33,11 +50,21 @@ class ItemDialog extends StatefulWidget {
   }
 }
 
+/// State for item dialog
 class ItemDialogState extends State<ItemDialog> {
+  /// New item
   ItemModel? newItem;
+
+  /// Item name
   TextEditingController itemName = TextEditingController();
+
+  /// Is the item custom
   late bool isCustom;
+
+  /// Items found from search
   List<ItemModel> items = [];
+
+  /// Form Key
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -46,11 +73,13 @@ class ItemDialogState extends State<ItemDialog> {
     isCustom = widget.isCustom;
 
     newItem = widget.originalItem;
+    // set item name if updating
     itemName.text = newItem != null ? newItem!.itemName : '';
   }
 
   @override
   Widget build(BuildContext context) {
+    // create scaffold so that snackbar will be displayed on top of dialog
     return ScaffoldMessenger(
       child: StatefulBuilder(builder: ((innerContext, setState) {
         return Scaffold(
@@ -104,9 +133,9 @@ class ItemDialogState extends State<ItemDialog> {
                               }).onError((error, stackTrace) {
                                 // display error that items failed to load
                                 ScaffoldMessenger.of(innerContext)
-                                    .showSnackBar(SnackBar(
-                                  content: const Text('Failed to get items.'),
-                                  backgroundColor: Colors.red[400],
+                                    .showSnackBar(const SnackBar(
+                                  content: Text('Failed to get items.'),
+                                  backgroundColor: errorColor,
                                 ));
                               });
                             },
@@ -226,6 +255,7 @@ class ItemDialogState extends State<ItemDialog> {
   }
 }
 
+/// Creates a dialog for custom items
 class CustomListItemDialog extends StatelessWidget {
   const CustomListItemDialog({
     super.key,
@@ -237,11 +267,22 @@ class CustomListItemDialog extends StatelessWidget {
     required this.listId,
   });
 
+  /// Callback for submitting
   final Function(CustomListItemModel) onSubmit;
+
+  /// Dialog text
   final String alertText;
+
+  /// Dialog submit button text
   final String submitText;
+
+  /// Parent context
   final BuildContext parentContext;
+
+  /// If updating, set value to item to be updated
   final CustomListItemModel? originalItem;
+
+  /// List ID of the item
   final int listId;
 
   @override
@@ -253,6 +294,7 @@ class CustomListItemDialog extends StatelessWidget {
       onSubmit: (item) {
         CustomListItemModel customItem;
         if (originalItem != null) {
+          // updating item
           customItem = CustomListItemModel(
             itemName: item.itemName,
             checked: originalItem!.checked,
@@ -261,6 +303,7 @@ class CustomListItemDialog extends StatelessWidget {
             customItemId: originalItem!.customItemId,
           );
         } else {
+          // creating item
           customItem = CustomListItemModel(
               itemName: item.itemName,
               checked: false,
@@ -278,6 +321,7 @@ class CustomListItemDialog extends StatelessWidget {
   }
 }
 
+/// Creates a dialog for list items
 class ListItemDialog extends StatelessWidget {
   const ListItemDialog({
     super.key,
@@ -290,12 +334,25 @@ class ListItemDialog extends StatelessWidget {
     required this.listsService,
   });
 
+  /// Callback for submitting
   final Function(ListItemModel) onSubmit;
+
+  /// Dialog text
   final String alertText;
+
+  /// Dialog submit button text
   final String submitText;
+
+  /// Parent context
   final BuildContext parentContext;
+
+  /// If updating, set value to item to be updated
   final ListItemModel? originalItem;
+
+  /// List ID of the item
   final int listId;
+
+  /// Instance of [ListsService]
   final ListsService listsService;
 
   @override
@@ -308,6 +365,7 @@ class ListItemDialog extends StatelessWidget {
       onSubmit: (item) {
         ListItemModel listItem;
         if (originalItem != null) {
+          // updating item
           listItem = ListItemModel(
             itemId: item.itemId,
             checked: originalItem!.checked,
@@ -316,6 +374,7 @@ class ListItemDialog extends StatelessWidget {
             listId: listId,
           );
         } else {
+          // creating item
           listItem = ListItemModel(
             itemId: item.itemId,
             checked: false,
@@ -334,6 +393,7 @@ class ListItemDialog extends StatelessWidget {
   }
 }
 
+/// Creates a dialog for recipe items
 class RecipeItemDialog extends StatelessWidget {
   const RecipeItemDialog({
     super.key,
@@ -346,12 +406,25 @@ class RecipeItemDialog extends StatelessWidget {
     required this.listsService,
   });
 
+  /// Callback for submitting
   final Function(RecipeItemModel) onSubmit;
+
+  /// Dialog text
   final String alertText;
+
+  /// Dialog submit button text
   final String submitText;
+
+  /// Parent context
   final BuildContext parentContext;
+
+  /// If updating, set value to item to be updated
   final RecipeItemModel? originalItem;
+
+  /// Recipe ID of the item
   final int recipeId;
+
+  /// Instance of [ListsService]
   final ListsService listsService;
 
   @override
@@ -364,12 +437,14 @@ class RecipeItemDialog extends StatelessWidget {
       onSubmit: (item) {
         RecipeItemModel recipeItem;
         if (originalItem != null) {
+          // updating item
           recipeItem = RecipeItemModel(
             itemId: item.itemId,
             recipeItemId: originalItem!.recipeItemId,
             recipeId: recipeId,
           );
         } else {
+          // creating item
           recipeItem = RecipeItemModel(
             itemId: item.itemId,
             recipeItemId: -1,

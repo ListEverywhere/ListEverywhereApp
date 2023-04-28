@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 
+/// An action card for the recipe explore view
 class ExploreCard extends StatelessWidget {
+  /// Card text
   final String cardText;
+
+  /// Callback for tapping
   final Function() onTap;
+
+  /// Card color
   final Color color;
+
+  /// Font color
   final Color fontColor;
+
+  /// Card icon
   final IconData cardIcon;
 
   const ExploreCard({

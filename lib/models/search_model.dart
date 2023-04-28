@@ -1,5 +1,9 @@
+/// Represents a search query for recipes
 class SearchModel {
+  /// Search term
   String search;
+
+  /// Type of search (contains, starts, ends)
   String searchType;
 
   SearchModel({

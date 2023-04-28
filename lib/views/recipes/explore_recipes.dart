@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
 import 'package:listeverywhere_app/widgets/explore_card.dart';
 
+/// Displays the recipe explore view
 class ExploreRecipes extends StatelessWidget {
   const ExploreRecipes({super.key});
 

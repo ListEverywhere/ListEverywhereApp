@@ -13,8 +13,10 @@ class ShoppingListEntry extends StatelessWidget {
   /// Callback function for deleting
   final Function(int) deleteCallback;
 
+  /// Callback function for tapping
   final Function() onTap;
 
+  /// Enables editing
   final bool enableActions;
 
   const ShoppingListEntry(

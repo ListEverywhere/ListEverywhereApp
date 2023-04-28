@@ -4,12 +4,14 @@ import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/services/recipes_service.dart';
 import 'package:listeverywhere_app/widgets/recipes/recipes_list_view.dart';
 
+/// Displays a list of recipes with the given [category]
 class CategoryRecipesView extends StatefulWidget {
   const CategoryRecipesView({
     super.key,
     required this.category,
   });
 
+  /// Recipe Category
   final CategoryModel category;
 
   @override
@@ -18,9 +20,12 @@ class CategoryRecipesView extends StatefulWidget {
   }
 }
 
+/// State for the category recipes view
 class CategoryRecipesViewState extends State<CategoryRecipesView> {
+  /// Instance of [RecipesService]
   final recipesService = RecipesService();
 
+  /// Returns a list of recipes with the matching category
   Future<List<RecipeModel>> getRecipes() async {
     var recipes =
         await recipesService.getRecipesByCategory(widget.category.categoryId);

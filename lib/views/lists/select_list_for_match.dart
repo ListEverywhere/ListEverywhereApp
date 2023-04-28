@@ -6,9 +6,11 @@ import 'package:listeverywhere_app/services/user_service.dart';
 import 'package:listeverywhere_app/widgets/lists/shopping_lists_list_view.dart';
 import 'package:listeverywhere_app/widgets/recipes/merge_dialog.dart';
 
+/// Displays user's shopping lists to select one for recipe matching
 class SelectListForMatchView extends StatefulWidget {
   const SelectListForMatchView({super.key, this.recipeId});
 
+  /// Value is set if user clicked 'Merge with List' on a recipe
   final int? recipeId;
 
   @override
@@ -17,15 +19,16 @@ class SelectListForMatchView extends StatefulWidget {
   }
 }
 
+/// State for the shopping list select view
 class SelectListForMatchViewState extends State<SelectListForMatchView> {
   ListsService listsService = ListsService();
   UserService userService = UserService();
 
+  /// Returns list of user's shopping lists
   Future<List<ListModel>> getUserLists() async {
     var user = await userService.getUserFromToken();
 
-    print(widget.recipeId);
-
+    // get user lists with no custom items
     var lists = await listsService.getUserLists(
       user.id!,
       noItems: widget.recipeId != null,
@@ -67,13 +70,17 @@ class SelectListForMatchViewState extends State<SelectListForMatchView> {
                     var data = snapshot.data!;
 
                     if (data.isNotEmpty) {
+                      // user has lists, display listview
                       return ShoppingListsListView(
                         onUpdate: (p0) {},
                         onDelete: (p0) {},
                         onTap: (p0) async {
+                          // user selected a list
                           print('Selected list ${p0.listId}');
 
+                          // check for if user is going through recipe matching
                           if (widget.recipeId != null) {
+                            // user started from recipe and clicked 'Merge with List'
                             print(
                                 'merging list with recipe id ${widget.recipeId}');
                             await listsService
@@ -100,7 +107,9 @@ class SelectListForMatchViewState extends State<SelectListForMatchView> {
                               );
                             });
                           } else {
+                            // user originally clicked on recipe match through explore tab
                             print('moving on with search by list items');
+                            // map each item as a list item
                             var items = p0.listItems!.map(
                               (e) {
                                 return e as ListItemModel;
@@ -118,7 +127,7 @@ class SelectListForMatchViewState extends State<SelectListForMatchView> {
                         enableActions: false,
                       );
                     }
-
+                    // user has no lists
                     return const Center(
                         child: Text('You do not have any Shopping Lists.'));
                   }

@@ -14,7 +14,9 @@ class ListsService {
   /// API url
   final String _url = '$apiUrl/lists';
 
-  /// Returns a list of shopping lists from a given [userId]
+  /// Returns a list of shopping lists from a given [userId] <br>
+  /// If [noItems] is true, lists will have no items <br>
+  /// If [noCustomItems] is true, lists will have no custom items
   Future<List<ListModel>> getUserLists(int userId,
       {noItems = true, noCustomItems = false}) async {
     // get user token
@@ -299,15 +301,14 @@ class ListsService {
 
     // check type of item so that appropriate endpoint is used
     if (item is CustomListItemModel) {
-      response = await http.delete(
-          Uri.parse('$_url/items/custom/${item.customItemId}'),
-          headers: {
-            'Authorization': 'Bearer $token',
-          });
+      response = await http
+          .delete(Uri.parse('$url/custom/${item.customItemId}'), headers: {
+        'Authorization': 'Bearer $token',
+      });
     } else {
       ListItemModel tempItem = item as ListItemModel;
       response = await http.delete(
-        Uri.parse('$_url/items/${tempItem.listItemId}'),
+        Uri.parse('$url/${tempItem.listItemId}'),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -325,10 +326,12 @@ class ListsService {
     return Future.error(Exception(initialData['message'][0]));
   }
 
+  /// Merges items from a recipe given the [recipeId] into a list given the [listId]
   Future mergeListWithRecipe(int listId, int recipeId) async {
     // get user token
     var token = await userService.getTokenIfSet();
 
+    // send post request
     var response = await http.post(
       Uri.parse('$_url/$listId/merge-recipe/$recipeId'),
       headers: {
@@ -336,12 +339,14 @@ class ListsService {
       },
     );
 
+    // decode initial data
     var initialData = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
+      // successfully merged
       return Future.value(1);
     }
-
+    // failed to merge
     return Future.error(initialData['message'][0]);
   }
 }

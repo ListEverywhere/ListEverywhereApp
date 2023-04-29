@@ -119,7 +119,11 @@ class CreateRecipeViewState extends State<CreateRecipeView> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ReusableFormField(
-                        controller: recipeName, hint: 'Recipe Name'),
+                      controller: recipeName,
+                      hint: 'Recipe Name',
+                      minLength: 1,
+                      maxLength: 50,
+                    ),
                     FutureBuilder(
                       future: getCategories(),
                       builder: (context, snapshot) {

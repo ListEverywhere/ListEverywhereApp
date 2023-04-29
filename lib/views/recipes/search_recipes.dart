@@ -49,6 +49,7 @@ class SearchRecipesViewState extends State<SearchRecipesView> {
                     controller: search,
                     hint: 'Recipe name',
                     minLength: 3,
+                    maxLength: 50,
                   ),
                   DropdownButton<String>(
                     value: searchType,

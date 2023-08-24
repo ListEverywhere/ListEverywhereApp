@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/category_model.dart';
-import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';
 import 'package:listeverywhere_app/models/search_model.dart';
-import 'package:listeverywhere_app/models/user_model.dart';
 import 'package:listeverywhere_app/views/lists/select_list_for_match.dart';
 import 'package:listeverywhere_app/views/lists/select_list_items_for_match.dart';
 import 'package:listeverywhere_app/views/recipes/create_recipe.dart';
 import 'package:listeverywhere_app/views/recipes/select_recipe_for_match.dart';
-import 'package:listeverywhere_app/widgets/bottom_navbar.dart';
 import 'package:listeverywhere_app/views/recipes/category_recipes.dart';
 import 'package:listeverywhere_app/views/recipes/explore_recipes.dart';
 import 'package:listeverywhere_app/views/home.dart';
@@ -23,7 +20,6 @@ import 'package:listeverywhere_app/views/recipes/search_recipes.dart';
 import 'package:listeverywhere_app/views/recipes/search_recipes_results.dart';
 import 'package:listeverywhere_app/views/lists/single_list.dart';
 import 'package:listeverywhere_app/views/recipes/single_recipe.dart';
-import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());

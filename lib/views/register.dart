@@ -54,8 +54,8 @@ class RegisterViewState extends State<RegisterView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Wrap(
-                    children: const [
+                  const Wrap(
+                    children: [
                       Text('Create a new account:',
                           style: TextStyle(fontSize: 24))
                     ],

@@ -41,8 +41,8 @@ class _LoginViewState extends State<LoginView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Wrap(
-                  children: const [
+                const Wrap(
+                  children: [
                     Text('Enter your account information below:',
                         style: TextStyle(fontSize: 24))
                   ],

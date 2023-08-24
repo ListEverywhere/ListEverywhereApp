@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:listeverywhere_app/constants.dart';
 import 'package:listeverywhere_app/models/item_model.dart';
 import 'package:listeverywhere_app/models/list_model.dart';
 import 'package:listeverywhere_app/models/recipe_model.dart';

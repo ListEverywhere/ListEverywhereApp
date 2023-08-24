@@ -104,8 +104,8 @@ class CreateRecipeViewState extends State<CreateRecipeView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Wrap(
-              children: const [
+            const Wrap(
+              children: [
                 Text('Enter the recipe information below:',
                     style: TextStyle(fontSize: 24))
               ],

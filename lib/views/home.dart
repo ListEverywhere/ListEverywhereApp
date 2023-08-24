@@ -87,13 +87,13 @@ class HomeView extends StatelessWidget {
                 padding: const EdgeInsets.all(15.0),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 4),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   Text('ListEverywhere 2023'),
                   FatSecretBadge(),
                 ],

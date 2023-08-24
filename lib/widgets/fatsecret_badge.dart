@@ -12,7 +12,6 @@ class FatSecretBadge extends StatelessWidget {
     if (!await launchUrl(Uri.parse(_url))) {
       print('failed to launch url');
     }
-    ;
   }
 
   @override

@@ -117,7 +117,6 @@ class SingleListViewState extends State<SingleListView> {
           backgroundColor: errorColor,
         ));
       });
-      ;
     }
   }
 

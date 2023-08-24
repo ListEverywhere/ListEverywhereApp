@@ -138,14 +138,14 @@ class ListsService {
     return Future.error(Exception(initialData['message'][0]));
   }
 
-  /// Delete a list with the given [list_id]
-  Future deleteList(int list_id) async {
+  /// Delete a list with the given [listId]
+  Future deleteList(int listId) async {
     // get user token
     String token = await userService.getTokenIfSet();
 
     // send HTTP delete with list id
     var response = await http.delete(
-      Uri.parse('$_url/$list_id'),
+      Uri.parse('$_url/$listId'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

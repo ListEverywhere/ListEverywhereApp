@@ -161,9 +161,10 @@ class ListsService {
   }
 
   /// Returns a list of items matching the given [search]
-  Future<List<ItemModel>> searchItemsByName(String search) async {
+  Future<List<ItemModel>> searchItemsByName(String search,
+      {int page_number = 0}) async {
     // encode search string to json
-    var searchData = jsonEncode({'search': search});
+    var searchData = jsonEncode({'search': search, 'pageNumber': page_number});
 
     // get user token
     String token = await userService.getTokenIfSet();

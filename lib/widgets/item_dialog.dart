@@ -67,6 +67,40 @@ class ItemDialogState extends State<ItemDialog> {
   /// Form Key
   final _formKey = GlobalKey<FormState>();
 
+  /// Page number
+  int pageNumber = 0;
+
+  /// Performs item search
+  void searchItems(BuildContext innerContext, bool resetPage) async {
+    // search icon pressed, search items
+    if (widget.listsService == null) {
+      throw Exception('listsService is required.');
+    }
+    if (resetPage) {
+      // reset the page number
+      pageNumber = 0;
+    }
+    await widget.listsService!
+        .searchItemsByName(itemName.text, page_number: pageNumber)
+        .then((value) {
+      if (value.isEmpty) {
+      } else {
+        // update items value and set current item to first
+        setState(() {
+          print(value);
+          items = value;
+          newItem = items.first;
+        });
+      }
+    }).onError((error, stackTrace) {
+      // display error that items failed to load
+      ScaffoldMessenger.of(innerContext).showSnackBar(const SnackBar(
+        content: Text('Failed to get items.'),
+        backgroundColor: errorColor,
+      ));
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -114,30 +148,8 @@ class ItemDialogState extends State<ItemDialog> {
                     if (!isCustom)
                       Expanded(
                         child: IconButton(
-                            onPressed: () async {
-                              // search icon pressed, search items
-                              if (widget.listsService == null) {
-                                throw Exception('listsService is required.');
-                              }
-                              await widget.listsService!
-                                  .searchItemsByName(itemName.text)
-                                  .then((value) {
-                                if (value.isEmpty) {
-                                } else {
-                                  // update items value and set current item to first
-                                  setState(() {
-                                    items = value;
-                                    newItem = items.first;
-                                  });
-                                }
-                              }).onError((error, stackTrace) {
-                                // display error that items failed to load
-                                ScaffoldMessenger.of(innerContext)
-                                    .showSnackBar(const SnackBar(
-                                  content: Text('Failed to get items.'),
-                                  backgroundColor: errorColor,
-                                ));
-                              });
+                            onPressed: () {
+                              searchItems(innerContext, true);
                             },
                             icon: const Icon(Icons.search)),
                       ),
@@ -162,6 +174,22 @@ class ItemDialogState extends State<ItemDialog> {
                         newItem = value;
                       });
                     },
+                  ),
+                if (!isCustom)
+                  SizedBox(
+                    height: 30,
+                    width: 100,
+                    child: ReusableButton(
+                      text: "More Items",
+                      textColor: Colors.white,
+                      fontSize: 14,
+                      onTap: () {
+                        if (items.isNotEmpty) {
+                          pageNumber++;
+                          searchItems(innerContext, false);
+                        }
+                      },
+                    ),
                   ),
                 // hide checkbox when updating items
                 if (!widget.hideCheckbox)
